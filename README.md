@@ -3,7 +3,7 @@
 Protótipo do checklist do mecânico do RepareCar com um carro 3D: abas Danos e Checklist, zonas clicáveis e foco de câmera
 por item. Página estática, sem build. O modelo fica em `assets/models/golf-gti-2025.glb` (19 MB).
 
-Publicado pelo GitHub Pages a partir da branch `main`.
+Publicado pelo Netlify a partir da branch `main`. A configuração está em `netlify.toml`: sem build, publica a raiz.
 
 ## Rodar local
 

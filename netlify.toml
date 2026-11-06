@@ -1,0 +1,11 @@
+# Página estática: sem build, publica a raiz do repositório.
+[build]
+  publish = "."
+  command = ""
+
+# O modelo 3D tem 19 MB e não muda entre deploys sem trocar o arquivo.
+[[headers]]
+  for = "/assets/models/*"
+  [headers.values]
+    Content-Type = "model/gltf-binary"
+    Cache-Control = "public, max-age=604800"
