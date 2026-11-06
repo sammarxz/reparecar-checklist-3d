@@ -1,4 +1,4 @@
-/* Aba Danos: formulário do dano, lista de danos registrados e drawer de baixo no celular. */
+/* Danos: estado vazio, formulário do dano, lista de danos registrados e drawer de baixo no celular. */
 /* Estado vazio, no padrão PageEmptyState / Empty do frontend: centrado, ilustração, título e descrição. */
 .empty-state {
   min-height: 320px;
@@ -42,7 +42,7 @@
     display: none;
   }
 
-  body[data-tab="damages"] #panel {
+  #panel {
     display: flex;
     flex-direction: column;
   }
@@ -265,7 +265,7 @@
 
 /* Em tela empilhada o formulário vive no drawer, não no painel */
 @media (max-width: 1100px) {
-  body[data-tab="damages"] .panel .dmg-form {
+  .panel .dmg-form {
     display: none;
   }
 }

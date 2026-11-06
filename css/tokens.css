@@ -13,16 +13,9 @@
   --accent-hover: #ff8b39;
   --accent-soft: #fff7f4;
   --accent-border: #f2d6cc;
-  --ok: #079455;
-  --ok-border: #18b368;
-  --ok-soft: #eef9f1;
   --problem: #e6352b;
-  --problem-border: #f04438;
-  --problem-soft: #fff1f0;
-  --warn: #b54708;
-  --warn-soft: #fffaeb;
   --pill: #f2f4f7;
-  --surface-muted: #e9eaeb; /* contêiner do seletor de abas do produto; também cards de resumo e palco 3D */
+  --surface-muted: #e9eaeb; /* cinza do contêiner de abas do produto: palco 3D e chips */
   --shadow: 0 1px 2px rgba(10, 13, 18, 0.05);
   --shadow-raised: 0 10px 30px rgba(10, 13, 18, 0.2);
   --font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;

@@ -4,11 +4,11 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MODEL_URL, PAINT_COLOR, PAINT_MATERIAL_NAME } from '../config.js';
-import { PARTS, PART_BY_ID, BODY_PARTS, TOP_FACING } from '../data/parts.js';
+import { PART_BY_ID } from '../data/parts.js';
 import { car } from './renderer.js';
 
-// Malhas que respondem ao toque em cada aba.
-export const pickSets = { zone: [], body: [] };
+// Malhas que respondem ao toque: lataria, vidros e luzes.
+export const pickables = [];
 
 // Região da carroceria pintada, em coordenadas do carro: x frente, y cima, z direita.
 function bodyRegion(p) {
@@ -85,24 +85,7 @@ function register(mesh, id) {
   if (!part) return;
   mesh.userData.part = part;
   part.meshes.push(mesh);
-  if (part.items.length) pickSets.zone.push(mesh); // aba Checklist: só zonas com itens
-  if (BODY_PARTS.has(id)) pickSets.body.push(mesh); // aba Danos: lataria, vidros e luzes
-}
-
-// Centro de cada peça, usado pela câmera e pelos marcadores.
-function computeCenters() {
-  const box = new THREE.Box3();
-  for (const p of PARTS) {
-    if (!p.meshes.length) continue;
-    box.makeEmpty();
-    for (const m of p.meshes) box.expandByObject(m);
-    const c = box.getCenter(new THREE.Vector3());
-    if (p.side === 'left') c.z = box.min.z;
-    if (p.side === 'right') c.z = box.max.z;
-    if (TOP_FACING.has(p.id)) c.y = box.max.y;
-    if (p.id === 'chassis') c.y = box.min.y;
-    p.center = c;
-  }
+  pickables.push(mesh);
 }
 
 export function loadModel({ onProgress, onLoad, onError }) {
@@ -134,7 +117,6 @@ export function loadModel({ onProgress, onLoad, onError }) {
       m.receiveShadow = true;
       if (r) register(m, r);
     }
-    computeCenters();
     onLoad();
   }, ev => { if (ev.total) onProgress(ev.loaded / ev.total); }, onError);
 }

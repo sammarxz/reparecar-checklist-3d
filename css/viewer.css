@@ -161,7 +161,7 @@
 }
 
 @media (max-width: 760px) {
-  /* Na aba Danos o carro tem altura fixa; o painel abaixo fica com o resto da tela. */
+  /* No celular o carro tem altura fixa; o painel abaixo fica com o resto da tela. */
   .viewer {
     flex: none;
     height: 40dvh;

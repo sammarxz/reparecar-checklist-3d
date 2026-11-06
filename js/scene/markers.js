@@ -1,14 +1,15 @@
-// Marcadores HTML projetados sobre o carro: zonas com problema na aba Checklist, pinos de dano na aba Danos.
+// Pinos de dano projetados sobre o carro: um por dano registrado e um tracejado para o rascunho.
 import * as THREE from 'three';
 import { camera, canvas } from './renderer.js';
 import { state } from '../state.js';
 import { PART_BY_ID } from '../data/parts.js';
+import { pad2 } from '../ui/dom.js';
 
 const container = document.getElementById('markers');
 const v3 = new THREE.Vector3();
-let handlers = { onZone: () => {}, onDamage: () => {} };
+let onSelect = () => {};
 
-export function initMarkers(h) { handlers = h; }
+export function onMarkerClick(fn) { onSelect = fn; }
 
 function place(el, position, rect) {
   v3.copy(position).project(camera);
@@ -31,32 +32,20 @@ function ensure(key, className, onClick) {
 
 export function updateMarkers() {
   const rect = canvas.getBoundingClientRect();
-  const damagesTab = state.tab === 'damages';
-  const wanted = new Set(damagesTab ? state.damages.map(d => `d${d.id}`).concat(state.draft ? ['draft'] : []) : state.problemOrder);
+  const wanted = new Set(state.damages.map(d => `d${d.id}`));
+  if (state.draft) wanted.add('draft');
   for (const el of [...container.children]) if (!wanted.has(el.dataset.key)) el.remove();
 
-  if (damagesTab) {
-    if (state.draft) {
-      const el = ensure('draft', 'marker dmg sel draft');
-      el.textContent = String(state.damages.length + 1).padStart(2, '0');
-      place(el, state.draft.point, rect);
-    }
-    state.damages.forEach((d, i) => {
-      const el = ensure(`d${d.id}`, 'marker dmg', () => handlers.onDamage(d.id));
-      el.textContent = String(i + 1).padStart(2, '0');
-      el.title = PART_BY_ID[d.partId].label;
-      el.classList.toggle('sel', state.damageSel === d.id);
-      place(el, d.point, rect);
-    });
-    return;
+  if (state.draft) {
+    const el = ensure('draft', 'marker dmg sel draft');
+    el.textContent = pad2(state.damages.length + 1);
+    place(el, state.draft.point, rect);
   }
-
-  state.problemOrder.forEach((id, i) => {
-    const part = PART_BY_ID[id];
-    const el = ensure(id, 'marker', () => handlers.onZone(id));
-    el.textContent = i + 1;
-    el.title = part.label;
-    if (!part.center) { el.hidden = true; return; }
-    place(el, part.center, rect);
+  state.damages.forEach((d, i) => {
+    const el = ensure(`d${d.id}`, 'marker dmg', () => onSelect(d.id));
+    el.textContent = pad2(i + 1);
+    el.title = PART_BY_ID[d.partId].label;
+    el.classList.toggle('sel', state.damageSel === d.id);
+    place(el, d.point, rect);
   });
 }

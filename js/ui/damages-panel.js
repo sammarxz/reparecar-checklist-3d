@@ -1,11 +1,9 @@
-// Aba Danos: registro livre e opcional. O formulário fica no painel no desktop e num drawer no celular.
+// Painel de danos: registro livre e opcional. O formulário fica no painel no desktop e num drawer no celular.
 import { state } from '../state.js';
-import { SIDE_LABEL, DAMAGE_TYPES } from '../data/checklist.js';
-import { PART_BY_ID } from '../data/parts.js';
+import { PART_BY_ID, SIDE_LABEL, DAMAGE_TYPES } from '../data/parts.js';
 import { STACKED_LAYOUT } from '../config.js';
 import { refs, esc, pad2, ICONS, UPLOAD_BOX, bindUploadStubs } from './dom.js';
 import { selectDamage, closeDamage, commitDamage, removeDamage } from './actions.js';
-import { placeTabs } from './tabs.js';
 
 const { panel, drawer, sheet } = refs;
 
@@ -52,12 +50,9 @@ export function renderDamages() {
       <h2>Danos na lataria</h2>
       <div class="sub">Registro opcional, para provar o estado do carro na entrada. Toque na lataria no ponto do dano.</div>
     </div>
-    <div class="tabs-slot"></div>
     ${noDamages ? EMPTY_STATE : ''}
     ${form}
     ${rows ? `<div class="eyebrow spaced">Danos registrados</div><div class="dmg-list">${rows}</div>` : ''}`;
-
-  placeTabs();
 
   // Em tela empilhada o formulário vai para o drawer; no desktop fica no painel.
   const useDrawer = stacked.matches;
@@ -77,6 +72,6 @@ function bindDamages(sel, formRoot) {
 }
 
 // O formulário muda de lugar ao virar a tela.
-stacked.addEventListener('change', () => { if (state.tab === 'damages') renderDamages(); });
+stacked.addEventListener('change', renderDamages);
 drawer.querySelector('.scrim').addEventListener('click', closeDamage);
-refs.drawer.querySelector('#sheetClose').addEventListener('click', closeDamage);
+drawer.querySelector('#sheetClose').addEventListener('click', closeDamage);

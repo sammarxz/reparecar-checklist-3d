@@ -55,23 +55,7 @@
   margin-top: 20px;
 }
 
-.empty {
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-item);
-  padding: 20px;
-  text-align: center;
-  color: var(--subtle);
-  font-size: 13px;
-  margin-top: 16px;
-}
-
-/* Campos do formulário, no formato do produto */
-.fields {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
+/* Campos do formulário de dano, no formato do produto */
 .field label {
   display: block;
   font-size: 13px;

@@ -1,11 +1,9 @@
-// Câmera em órbita: arrastar gira, roda aproxima, e um alvo animado leva a câmera a uma vista, peça ou ponto.
+// Câmera em órbita: arrastar gira, roda aproxima, e um alvo animado leva a câmera à vista padrão ou a um ponto.
 import * as THREE from 'three';
 import { camera } from './renderer.js';
-import { LOW_ANGLE_CATEGORIES, HIGH_ANGLE_CATEGORIES } from '../data/checklist.js';
-import { TOP_FACING } from '../data/parts.js';
 
 export const orbit = { theta: -0.75, phi: 1.12, r: 10, target: new THREE.Vector3(0, 0.55, 0) };
-const VIEWS = { iso: [-0.75, 1.12], front: [0, 1.25], left: [-Math.PI / 2, 1.3], right: [Math.PI / 2, 1.3], rear: [Math.PI, 1.25], top: [-0.75, 0.08] };
+const ISO_VIEW = [-0.75, 1.12]; // 3/4 dianteiro esquerdo
 const DEFAULT_R = 10;
 const clamp1 = v => Math.max(-1, Math.min(1, v));
 let goal = null;
@@ -15,24 +13,9 @@ function setGoal(theta, phi, r, target) {
   goal = { theta: orbit.theta + d, phi, r, target };
 }
 
-export function applyView(name) {
-  const [theta, phi] = VIEWS[name];
+export function resetView() {
+  const [theta, phi] = ISO_VIEW;
   setGoal(theta, phi, DEFAULT_R, new THREE.Vector3(0, 0.55, 0));
-}
-
-// Enquadra a peça. A categoria do item ajusta o ângulo: suspensão e freio por baixo, motor por cima.
-export function focusPart(part, cat) {
-  const c = part.center;
-  if (!c) return;
-  let theta = Math.atan2(c.z, c.x), phi = 1.15, r = DEFAULT_R * 0.62;
-  const centered = Math.hypot(c.x, c.z) < 0.5;
-  if (part.id === 'roof' || part.id === 'cabin' || centered) { theta = -0.75; phi = 0.55; }
-  else if (Math.abs(c.z) < 0.3) { theta = c.x > 0 ? -0.55 : Math.PI + 0.55; phi = TOP_FACING.has(part.id) ? 0.78 : 1.1; }
-  else theta = Math.sign(c.z) * (Math.PI / 2 - clamp1(c.x) * 0.55); // de lado, puxado para a ponta da peça
-  if (part.id === 'chassis') { theta = -1.15; phi = 1.42; r = DEFAULT_R * 0.75; }
-  if (LOW_ANGLE_CATEGORIES.has(cat)) { phi = 1.38; r = DEFAULT_R * 0.45; }
-  if (HIGH_ANGLE_CATEGORIES.has(cat)) { phi = 0.7; r = DEFAULT_R * 0.55; }
-  setGoal(theta, phi, r, new THREE.Vector3(c.x * 0.6, Math.min(c.y, 1) * 0.7 + 0.2, c.z * 0.5));
 }
 
 // Enquadra um ponto da lataria, usado pelos pinos de dano.

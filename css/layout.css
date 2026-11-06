@@ -1,4 +1,4 @@
-/* Casca do app: trilho lateral, página, cabeçalho, seletor de abas e grade dos dois cartões. */
+/* Casca do app: trilho lateral, página, cabeçalho e grade dos dois cartões. */
 .app {
   display: flex;
   height: 100vh;
@@ -133,52 +133,6 @@
   line-height: 1.2;
 }
 
-/* Seletor Danos / Checklist, largura total.
-   Mesmo estilo do produto: contêiner tablist de routes/_app/finance/_finance.tsx e componente ui/tab.tsx. */
-.tabs {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 4px;
-  padding: 8px;
-  border-radius: 900px;
-  background: var(--surface-muted);
-}
-
-.tabs button {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border: 0;
-  border-radius: 42px;
-  background: transparent;
-  color: var(--text);
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  transition: background-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
-}
-
-.tabs button[aria-selected="true"] {
-  background: #fff;
-  font-weight: 700;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Lugar do seletor dentro do painel, no desktop: depois do cabeçalho de cada aba */
-.tabs-slot {
-  margin-top: 16px;
-}
-
-@media (max-width: 760px) {
-  .tabs-slot {
-    display: none;
-  }
-}
-
 /* Grade: carro à esquerda, painel à direita, altura total */
 .grid {
   display: grid;
@@ -223,9 +177,5 @@
     flex-direction: column;
     flex: 1;
     min-height: 0;
-  }
-
-  body[data-tab="checklist"] .viewer {
-    display: none;
   }
 }

@@ -1,0 +1,59 @@
+/* Painel da direita: corpo com rolagem própria e rodapé fixo com as ações da etapa. */
+.panel {
+  --panel-pad: 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel .body {
+  padding: var(--panel-pad);
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.panel .foot {
+  padding: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+
+.panel h2 {
+  margin: 8px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--heading);
+  text-wrap: balance;
+}
+
+.panel .sub {
+  color: var(--subtle);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+@media (max-width: 1100px) {
+  .panel {
+    min-height: 520px;
+    max-height: 80vh;
+  }
+}
+
+@media (max-width: 760px) {
+  /* O painel ocupa o resto da tela: só o conteúdo rola, o rodapé fica sempre visível. */
+  .panel {
+    --panel-pad: 16px;
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .panel .foot {
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  }
+}
