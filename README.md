@@ -3,7 +3,8 @@
 Protótipo da etapa de danos do RepareCar, antes do checklist do mecânico: o mecânico toca na lataria do carro 3D no
 ponto do dano e registra a avaria. Página estática, sem build. O modelo fica em `assets/models/golf-gti-2025.glb` (19 MB).
 
-Publicado pelo Netlify a partir da branch `main`. A configuração está em `netlify.toml`: sem build, publica a raiz.
+Publicado pelo GitHub Pages a partir da raiz da branch `main`: https://sammarxz.github.io/reparecar-checklist-3d/
+`.nojekyll` desliga o build do Jekyll. O `netlify.toml` continua no repositório para quem publica pelo Netlify.
 
 ## Rodar local
 
