@@ -301,4 +301,9 @@
   .dmg-list {
     margin-top: 8px;
   }
+
+  /* Folga para o rodapé preso: o card aberto rola até ficar inteiro acima dele. */
+  .dmg-item {
+    scroll-margin-bottom: 96px;
+  }
 }

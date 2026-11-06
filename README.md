@@ -66,8 +66,8 @@ Dependências entre camadas: `data` não importa nada; `state` não importa nada
 - Cada dano é um card que expande no lugar com o formulário, um card aberto por vez. Abrir um card gira o carro até o
   pino. A lixeira remove.
 - No desktop o dano novo entra como último card, já aberto. No celular e em tela empilhada até 1100 px, ele abre num
-  drawer de baixo, com a base do `responsive-modal.ts` do produto. No celular a página tem a altura da tela e o
-  rodapé fica sempre visível.
+  drawer de baixo, com a base do `responsive-modal.ts` do produto. No celular o card de danos tem a altura do
+  conteúdo, quem rola é a página, e o rodapé fica preso no fim da tela.
 - O pino some quando o ponto marcado fica do outro lado do carro.
 
 ## Peças do modelo

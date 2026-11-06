@@ -166,10 +166,9 @@
     display: none;
   }
 
-  /* Celular: a tela inteira tem a altura da janela; o painel ocupa o que sobra e rola por dentro. */
+  /* Celular: a página cresce com o painel e quem rola é ela. */
   .app {
-    height: 100vh;
-    height: 100dvh;
+    height: auto;
   }
 
   .grid {
