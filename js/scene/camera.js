@@ -50,4 +50,6 @@ export function updateCamera() {
   const sp = Math.sin(orbit.phi);
   camera.position.set(orbit.r * sp * Math.cos(orbit.theta), orbit.r * Math.cos(orbit.phi), orbit.r * sp * Math.sin(orbit.theta)).add(orbit.target);
   camera.lookAt(orbit.target);
+  // Atualiza a matriz já neste quadro: os pinos são projetados antes do render e ficariam um quadro atrás.
+  camera.updateMatrixWorld();
 }

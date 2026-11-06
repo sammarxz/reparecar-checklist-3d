@@ -1,4 +1,6 @@
-// Painel de danos: registro livre e opcional. O formulário fica no painel no desktop e num drawer no celular.
+// Painel de danos: registro livre e opcional.
+// Cada dano é um card que expande no lugar com o formulário. O dano novo, tocado no carro, entra como
+// último card já aberto; em tela empilhada ele abre num drawer de baixo.
 import { state } from '../state.js';
 import { PART_BY_ID, SIDE_LABEL, DAMAGE_TYPES } from '../data/parts.js';
 import { STACKED_LAYOUT } from '../config.js';
@@ -6,6 +8,7 @@ import { refs, esc, pad2, ICONS, UPLOAD_BOX, bindUploadStubs } from './dom.js';
 import { selectDamage, closeDamage, commitDamage, removeDamage } from './actions.js';
 
 const { panel, drawer, sheet } = refs;
+const stacked = matchMedia(STACKED_LAYOUT);
 
 // Estado vazio no padrão PageEmptyState do produto: ilustração, título e descrição, sem ação.
 const EMPTY_STATE = `
@@ -14,71 +17,123 @@ const EMPTY_STATE = `
     <h3>Nenhum dano registrado</h3>
     <p>Se o carro chegou com amassado, risco ou trinca, toque no ponto do dano na lataria para registrar.</p>
   </div>`;
-const stacked = matchMedia(STACKED_LAYOUT);
 
-function damageForm(sel) {
-  const part = PART_BY_ID[sel.partId];
-  const number = state.draft ? pad2(state.damages.length + 1) : pad2(state.damages.indexOf(sel) + 1);
-  const options = DAMAGE_TYPES.map(t => `<option ${sel.type === t ? 'selected' : ''}>${t}</option>`).join('');
+const INTRO = `
+  <div class="panel-intro">
+    <div class="eyebrow">Funilaria</div>
+    <h2>Danos na lataria</h2>
+    <div class="sub">Registro opcional, para provar o estado do carro na entrada. Toque na lataria no ponto do dano.</div>
+  </div>`;
+
+// Card aberto no último render. O próximo render desenha a partir dele e troca a classe depois,
+// para a altura animar ao abrir e ao fechar.
+let shownOpen = null;
+
+function damageFields(d, { isDraft, head = '' }) {
+  const options = DAMAGE_TYPES.map(t => `<option ${d.type === t ? 'selected' : ''}>${t}</option>`).join('');
   return `
-    <div class="dmg-form">
-      <div class="dmg-head"><span class="badge-n">${number}</span><div><b>${esc(part.label)}</b><small>${SIDE_LABEL[part.side]}${state.draft ? ' · ainda não registrado' : ''}</small></div></div>
+    <div class="dmg-fields">
+      ${head}
       <div class="field"><label>Avaria encontrada</label><select data-dmg="type"><option value="">Selecione a avaria</option>${options}</select></div>
       <div class="field"><label>Documentar com fotos / vídeos</label>${UPLOAD_BOX}</div>
-      <div class="field"><label>Observação</label><textarea data-dmg="desc" placeholder="Tamanho, profundidade e se a pintura está comprometida">${esc(sel.desc)}</textarea></div>
-      <div class="row"><button class="btn" id="dmgDel">${state.draft ? 'Cancelar' : 'Remover'}</button><button class="btn primary" id="dmgDone">Concluir dano</button></div>
+      <div class="field"><label>Observação</label><textarea data-dmg="desc" placeholder="Tamanho, profundidade e se a pintura está comprometida">${esc(d.desc)}</textarea></div>
+      <div class="row"><button class="btn" type="button" data-dmg="secondary">${isDraft ? 'Cancelar' : 'Remover'}</button><button class="btn primary" type="button" data-dmg="done">Concluir dano</button></div>
     </div>`;
 }
 
-function damageRow(d, i) {
-  return `<button class="dmg-row ${state.damageSel === d.id ? 'sel' : ''}" data-dmg-id="${d.id}">
-    <span class="n">${pad2(i + 1)}</span>
-    <span class="t"><b>${esc(d.type)}</b><span>${esc(PART_BY_ID[d.partId].label)}</span></span>
-    <span class="del" data-del="${d.id}" role="button" aria-label="Remover">${ICONS.trash}</span>
-  </button>`;
+function damageItem(d, number, key) {
+  const isDraft = key === 'draft';
+  const part = PART_BY_ID[d.partId];
+  const open = String(shownOpen) === String(key);
+  return `
+    <div class="dmg-item ${isDraft ? 'draft' : ''} ${open ? 'open' : ''}" data-key="${key}">
+      <div class="dmg-row">
+        <button class="dmg-toggle" type="button" aria-expanded="${open}">
+          <span class="n">${number}</span>
+          <span class="t"><b>${esc(d.type || 'Nova avaria')}</b><span>${esc(part.label)} · ${SIDE_LABEL[part.side]}${isDraft ? ' · ainda não registrado' : ''}</span></span>
+          ${ICONS.chevron}
+        </button>
+        ${isDraft ? '' : `<button class="del" type="button" data-del="${d.id}" aria-label="Remover dano ${number}">${ICONS.trash}</button>`}
+      </div>
+      <div class="dmg-body"><div class="dmg-inner">${damageFields(d, { isDraft })}</div></div>
+    </div>`;
 }
 
 export function renderDamages() {
-  const sel = state.draft || state.damages.find(d => d.id === state.damageSel);
-  const form = sel ? damageForm(sel) : '';
-  const rows = state.damages.map(damageRow).join('');
-  const noDamages = !state.damages.length && !sel;
-
-  panel.innerHTML = `
-    <div class="panel-intro">
-      <div class="eyebrow">Funilaria</div>
-      <h2>Danos na lataria</h2>
-      <div class="sub">Registro opcional, para provar o estado do carro na entrada. Toque na lataria no ponto do dano.</div>
-    </div>
-    ${noDamages ? EMPTY_STATE : ''}
-    ${form}
-    ${rows ? `<div class="eyebrow spaced">Danos registrados</div><div class="dmg-list">${rows}</div>` : ''}`;
-
-  // Em tela empilhada o formulário vai para o drawer; no desktop fica no painel.
   const useDrawer = stacked.matches;
-  const opening = useDrawer && Boolean(sel) && !drawer.classList.contains('open');
-  sheet.innerHTML = useDrawer ? form : '';
-  drawer.classList.toggle('open', useDrawer && Boolean(sel));
+  const draftInList = Boolean(state.draft) && !useDrawer;
+  const openKey = state.draft ? (draftInList ? 'draft' : null) : state.damageSel;
+
+  const items = state.damages.map((d, i) => damageItem(d, pad2(i + 1), d.id));
+  if (draftInList) items.push(damageItem(state.draft, pad2(state.damages.length + 1), 'draft'));
+  panel.innerHTML = INTRO + (items.length ? `<div class="eyebrow spaced">Danos registrados</div><div class="dmg-list">${items.join('')}</div>` : EMPTY_STATE);
+  bindList();
+  animateOpen(openKey);
+
+  // Dano novo em tela empilhada: o formulário abre no drawer.
+  const draftInDrawer = useDrawer && Boolean(state.draft);
+  const opening = draftInDrawer && !drawer.classList.contains('open');
+  if (draftInDrawer) {
+    const part = PART_BY_ID[state.draft.partId];
+    const head = `<div class="dmg-head"><span class="badge-n">${pad2(state.damages.length + 1)}</span><div><b>${esc(part.label)}</b><small>${SIDE_LABEL[part.side]} · ainda não registrado</small></div></div>`;
+    sheet.innerHTML = damageFields(state.draft, { isDraft: true, head });
+    bindFields(sheet, state.draft, true);
+  } else {
+    sheet.innerHTML = '';
+  }
+  drawer.classList.toggle('open', draftInDrawer);
   if (opening) {
     // No celular o toque gera um click atrasado no mesmo ponto. Sem esta pausa ele cai no fundo
     // do drawer recém-aberto e o fecha na hora, ou aperta o botão que estiver ali.
     drawer.classList.add('settling');
     setTimeout(() => drawer.classList.remove('settling'), 400);
   }
-  bindDamages(sel, useDrawer ? sheet : panel);
 }
 
-function bindDamages(sel, formRoot) {
-  formRoot.querySelector('[data-dmg="type"]')?.addEventListener('change', e => { sel.type = e.target.value; });
-  formRoot.querySelector('[data-dmg="desc"]')?.addEventListener('input', e => { sel.desc = e.target.value; });
-  formRoot.querySelector('#dmgDel')?.addEventListener('click', () => (state.draft ? closeDamage() : removeDamage(sel.id)));
-  formRoot.querySelector('#dmgDone')?.addEventListener('click', commitDamage);
-  bindUploadStubs(formRoot);
-  panel.querySelectorAll('.dmg-row').forEach(b => b.addEventListener('click', e => { if (!e.target.closest('[data-del]')) selectDamage(Number(b.dataset.dmgId)); }));
-  panel.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); removeDamage(Number(b.dataset.del)); }));
+// Troca o card aberto depois do render. Timeout em vez de rAF, que pausa com a aba em segundo plano.
+function animateOpen(openKey) {
+  const changed = String(shownOpen) !== String(openKey);
+  shownOpen = openKey;
+  if (!changed) return;
+  setTimeout(() => {
+    void panel.offsetHeight; // calcula o estado de partida; sem isso a transição pula direto para o fim
+    for (const item of panel.querySelectorAll('.dmg-item')) {
+      const open = item.dataset.key === String(openKey);
+      item.classList.toggle('open', open);
+      item.querySelector('.dmg-toggle').setAttribute('aria-expanded', open);
+      if (open) setTimeout(() => item.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 420);
+    }
+  }, 20);
 }
 
-// O formulário muda de lugar ao virar a tela.
+function bindList() {
+  for (const item of panel.querySelectorAll('.dmg-item')) {
+    const key = item.dataset.key;
+    const isDraft = key === 'draft';
+    const d = isDraft ? state.draft : state.damages.find(x => String(x.id) === key);
+    item.querySelector('.dmg-toggle').addEventListener('click', () => {
+      if (isDraft) return; // o rascunho fica aberto até concluir ou cancelar
+      if (String(state.damageSel) === key) closeDamage();
+      else selectDamage(d.id);
+    });
+    item.querySelector('[data-del]')?.addEventListener('click', () => removeDamage(d.id));
+    bindFields(item, d, isDraft);
+  }
+}
+
+function bindFields(root, d, isDraft) {
+  const title = root.closest('.dmg-item')?.querySelector('.t b');
+  root.querySelector('[data-dmg="type"]').addEventListener('change', e => {
+    d.type = e.target.value;
+    if (title) title.textContent = d.type || 'Nova avaria';
+  });
+  root.querySelector('[data-dmg="desc"]').addEventListener('input', e => { d.desc = e.target.value; });
+  root.querySelector('[data-dmg="secondary"]').addEventListener('click', () => (isDraft ? closeDamage() : removeDamage(d.id)));
+  root.querySelector('[data-dmg="done"]').addEventListener('click', commitDamage);
+  bindUploadStubs(root);
+}
+
+// O formulário do dano novo muda de lugar ao virar a tela.
 stacked.addEventListener('change', renderDamages);
 drawer.querySelector('.scrim').addEventListener('click', closeDamage);
 drawer.querySelector('#sheetClose').addEventListener('click', closeDamage);

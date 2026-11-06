@@ -7,8 +7,8 @@ import { renderDamages } from './damages-panel.js';
 import { toast } from './dom.js';
 
 // O toque cria um rascunho com pino provisório. O dano entra na lista só em "Concluir dano".
-export function startDamage(partId, point) {
-  state.draft = { partId, point, type: '', desc: '' };
+export function startDamage(partId, point, normal) {
+  state.draft = { partId, point, normal, type: '', desc: '' };
   state.damageSel = null;
   setSelected(partId);
   focusPoint(point);

@@ -67,17 +67,7 @@
   }
 }
 
-.dmg-form {
-  border: 1px solid var(--accent-border);
-  background: var(--accent-soft);
-  border-radius: var(--radius-item);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-}
-
+/* Cabeçalho do formulário no drawer: número e peça */
 .dmg-head {
   display: flex;
   align-items: center;
@@ -95,69 +85,115 @@
   color: var(--subtle);
 }
 
-.dmg-form .row {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.dmg-form .row .btn {
-  height: 40px;
-  font-size: 13px;
-}
-
+/* Lista de danos: cada dano é um card branco que expande no lugar com o formulário */
 .dmg-list {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.dmg-item {
   border: 1px solid var(--border);
   border-radius: var(--radius-item);
-  overflow: hidden;
-  margin-top: 12px;
+  background: #fff;
+}
+
+.dmg-item.draft {
+  border-style: dashed;
+  border-color: var(--border-strong);
 }
 
 .dmg-row {
   display: flex;
   align-items: center;
+  gap: 4px;
+  padding-right: 8px;
+}
+
+.dmg-toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  padding: 12px 6px 12px 14px;
   border: 0;
-  background: #fff;
+  border-radius: calc(var(--radius-item) - 1px);
+  background: transparent;
   text-align: left;
-  border-bottom: 1px solid var(--border);
   font: inherit;
   color: var(--text);
 }
 
-.dmg-row:last-child {
-  border-bottom: 0;
-}
-
-.dmg-row:hover,
-.dmg-row.sel {
-  background: var(--accent-soft);
-}
-
-.dmg-row .n {
+.dmg-toggle .n {
   font-weight: 700;
   font-size: 12px;
   color: var(--subtle);
   width: 22px;
+  flex: none;
   font-variant-numeric: tabular-nums;
 }
 
-.dmg-row .t {
+.dmg-toggle .t {
   flex: 1;
   min-width: 0;
 }
 
-.dmg-row .t b {
+.dmg-toggle .t b {
   display: block;
   font-weight: 600;
 }
 
-.dmg-row .t span {
+.dmg-toggle .t span {
   font-size: 12px;
   color: var(--subtle);
+}
+
+.dmg-toggle .chev {
+  flex: none;
+  color: var(--muted);
+  transition: transform 0.25s var(--ease);
+}
+
+.dmg-item.open .chev {
+  transform: rotate(180deg);
+}
+
+/* Corpo recolhível, com a mesma curva das outras animações */
+.dmg-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease);
+}
+
+.dmg-item.open .dmg-body {
+  grid-template-rows: 1fr;
+}
+
+.dmg-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.dmg-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-inline: 14px;
+  padding-block: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.dmg-fields .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dmg-fields .row .btn {
+  height: 40px;
+  font-size: 13px;
 }
 
 .dmg-row .del {
@@ -174,7 +210,7 @@
 
 .dmg-row .del:hover {
   color: var(--problem);
-  background: #fff;
+  background: var(--pill);
 }
 
 /* Drawer de baixo, com a base do responsive-modal do produto */
@@ -244,11 +280,10 @@
   padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
 }
 
-.drawer .sheet-body .dmg-form {
-  margin-top: 0;
-  border: 0;
-  background: transparent;
-  padding: 0;
+.drawer .sheet-body .dmg-fields {
+  margin-inline: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .drawer.open {
@@ -266,11 +301,4 @@
 /* Logo após abrir, o drawer deixa passar o click atrasado do toque que o abriu (ver damages-panel.js). */
 .drawer.settling {
   pointer-events: none;
-}
-
-/* Em tela empilhada o formulário vive no drawer, não no painel */
-@media (max-width: 1100px) {
-  .panel .dmg-form {
-    display: none;
-  }
 }

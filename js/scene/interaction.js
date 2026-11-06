@@ -36,7 +36,14 @@ function tapAt(e, source) {
   const id = getHovered();
   debugLine(`${source} · ${id ? `peça: ${id}` : 'nada sob o toque'}`);
   if (!id) return;
-  tapHandler(id, lastHit.point.clone());
+  tapHandler(id, lastHit.point.clone(), surfaceNormal(lastHit));
+}
+
+// Normal da face tocada, no espaço do mundo e virada para quem tocou. Os pinos usam para sumir atrás do carro.
+function surfaceNormal(hit) {
+  if (!hit.face) return null;
+  const n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
+  return n.dot(ray.ray.direction) > 0 ? n.negate() : n;
 }
 
 canvas.addEventListener('pointerdown', e => {
