@@ -21,39 +21,90 @@
   touch-action: none;
 }
 
-/* Identificação do veículo sobre o palco: nome à esquerda, chips à direita */
+/* Identificação do veículo sobre o palco, no padrão do cartão de OS do mecânico:
+   nome e ano, selo de status com o cliente, e metadados com ícone à direita. */
 .vehicle {
   position: absolute;
   top: 16px;
-  left: 16px;
-  right: 16px;
+  left: 20px;
+  right: 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 8px 12px;
+  gap: 8px 16px;
   pointer-events: none;
   z-index: 2;
 }
 
-.vehicle .chips {
-  margin-left: auto;
-  justify-content: flex-end;
+.vehicle-id {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 
-/* Chips sobre o palco: um tom abaixo do fundo, para não sumirem nele. */
-.vehicle .chip:not(.accent) {
-  background: var(--surface-muted-strong);
-}
-
-.vehicle b {
+.vehicle-id b {
+  font-size: 16px;
+  line-height: 24px;
   font-weight: 600;
-  color: var(--heading);
+  color: var(--text);
 }
 
-.vehicle .meta {
-  font-size: 12px;
+.vehicle-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
   color: var(--subtle);
+}
+
+/* Selo "Diagnóstico" com as cores de STATUS_STYLES do produto */
+.vehicle .status {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid #fedf89;
+  border-radius: 999px;
+  background: #fffaeb;
+  color: #b54708;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+.vehicle-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 4px 0 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.vehicle-meta li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--subtle);
+  white-space: nowrap;
+}
+
+.vehicle-meta svg {
+  color: var(--muted);
+}
+
+/* Amostra da cor do carro: branco com borda, para aparecer sobre o cinza do palco */
+.vehicle-meta .swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--border-strong);
 }
 
 /* Pinos de dano projetados sobre o carro. A posição vem por transform, em js/scene/markers.js. */
@@ -161,25 +212,14 @@
     min-height: 0;
   }
 
-  .vehicle .meta {
-    display: none;
-  }
-
-  /* Sem espaço ao lado do nome: chips descem, alinhados à esquerda e mais compactos. */
+  /* No celular o palco é curto: fica o nome e o status; os metadados saem. */
   .vehicle {
     top: 12px;
     left: 12px;
     right: 12px;
   }
 
-  .vehicle .chips {
-    margin-left: 0;
-    justify-content: flex-start;
-    gap: 4px;
-  }
-
-  .vehicle .chip {
-    font-size: 11px;
-    padding: 2px 8px;
+  .vehicle-meta {
+    display: none;
   }
 }

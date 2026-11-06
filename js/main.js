@@ -7,15 +7,20 @@ import { updateCamera } from './scene/camera.js';
 import { loadModel, pickables } from './scene/model.js';
 import { onTap, setPickables } from './scene/interaction.js';
 import { onMarkerClick, updateMarkers } from './scene/markers.js';
-import { $, refs, toast } from './ui/dom.js';
+import { $, refs, toast, ICONS } from './ui/dom.js';
 import { renderDamages } from './ui/damages-panel.js';
 import { startDamage, selectDamage } from './ui/actions.js';
 
 // Cabeçalho da página e do veículo
 $('title').textContent = `Danos · ${VEHICLE.plate}`;
-$('vName').textContent = VEHICLE.name;
-$('vMeta').textContent = `${VEHICLE.owner} · Atendimento nº ${VEHICLE.serviceOrder}`;
-$('vChips').innerHTML = VEHICLE.chips.map(c => `<span class="chip">${c}</span>`).join('') + '<span class="chip accent">Em elaboração</span>';
+$('vName').textContent = `${VEHICLE.name} (${VEHICLE.year})`;
+$('vStatus').textContent = VEHICLE.status;
+$('vOwner').textContent = VEHICLE.owner;
+$('vMeta').innerHTML = [
+  [ICONS.receipt, `OS nº ${VEHICLE.serviceOrder}`],
+  ['<span class="swatch" aria-hidden="true"></span>', VEHICLE.color],
+  [ICONS.gauge, VEHICLE.mileage],
+].map(([icon, text]) => `<li>${icon}${text}</li>`).join('');
 
 // Rodapé. A ordem de serviço e o checklist ficam fora do protótipo.
 $('btnBack').addEventListener('click', () => toast('Volta para a ordem de serviço. Fora deste protótipo.'));

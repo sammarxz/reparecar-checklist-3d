@@ -50,7 +50,7 @@ function damageItem(d, number, key) {
       <div class="dmg-row">
         <button class="dmg-toggle" type="button" aria-expanded="${open}">
           <span class="n">${number}</span>
-          <span class="t"><b>${esc(d.type || 'Nova avaria')}</b><span>${esc(part.label)} · ${SIDE_LABEL[part.side]}${isDraft ? ' · ainda não registrado' : ''}</span></span>
+          <span class="t"><b>${esc(d.type || 'Nova avaria')}</b><span>${esc(part.label)} · ${SIDE_LABEL[part.side]}</span></span>
           ${ICONS.chevron}
         </button>
         ${isDraft ? '' : `<button class="del" type="button" data-del="${d.id}" aria-label="Remover dano ${number}">${ICONS.trash}</button>`}
@@ -75,7 +75,7 @@ export function renderDamages() {
   const opening = draftInDrawer && !drawer.classList.contains('open');
   if (draftInDrawer) {
     const part = PART_BY_ID[state.draft.partId];
-    const head = `<div class="dmg-head"><span class="badge-n">${pad2(state.damages.length + 1)}</span><div><b>${esc(part.label)}</b><small>${SIDE_LABEL[part.side]} · ainda não registrado</small></div></div>`;
+    const head = `<div class="dmg-head"><span class="badge-n">${pad2(state.damages.length + 1)}</span><div><b>${esc(part.label)}</b><small>${SIDE_LABEL[part.side]}</small></div></div>`;
     sheet.innerHTML = damageFields(state.draft, { isDraft: true, head });
     bindFields(sheet, state.draft, true);
   } else {

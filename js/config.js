@@ -8,7 +8,10 @@ export const DEBUG = /[?&]debug=1/.test(location.search);
 export const VEHICLE = {
   plate: 'TXK4J56',
   name: 'Volkswagen Golf GTI',
+  year: 2025,
   owner: 'André Figueiredo',
+  status: 'Diagnóstico',
   serviceOrder: 177,
-  chips: ['Hatch · 2025', 'Branco', '12.480 km'],
+  color: 'Branco',
+  mileage: '12.480 km',
 };
