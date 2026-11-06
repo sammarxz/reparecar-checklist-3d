@@ -3,7 +3,7 @@
 // assoalho vêm numa malha só e são fatiados por região. Rodas, freios e interior ficam sem peça.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { MODEL_URL, PAINT_COLOR, PAINT_MATERIAL_NAME } from '../config.js';
+import { MODEL_URL, MODEL_BYTES, PAINT_COLOR, PAINT_MATERIAL_NAME } from '../config.js';
 import { PART_BY_ID } from '../data/parts.js';
 import { car } from './renderer.js';
 
@@ -115,5 +115,5 @@ export function loadModel({ onProgress, onLoad, onError }) {
       register(m, r);
     }
     onLoad();
-  }, ev => { if (ev.total) onProgress(ev.loaded / ev.total); }, onError);
+  }, ev => onProgress(Math.min(1, ev.loaded / MODEL_BYTES)), onError);
 }
