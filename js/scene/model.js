@@ -1,6 +1,6 @@
 // Carrega o GLB e liga cada malha a uma peça do catálogo.
-// O arquivo traz portas, tampa, rodas, freios, luzes e vidros separados. Capô, teto, paralamas,
-// para-choques e assoalho vêm numa malha só e são fatiados por região.
+// O arquivo traz portas, tampa, luzes e vidros separados. Capô, teto, paralamas, para-choques e
+// assoalho vêm numa malha só e são fatiados por região. Rodas, freios e interior ficam sem peça.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MODEL_URL, PAINT_COLOR, PAINT_MATERIAL_NAME } from '../config.js';
@@ -23,18 +23,18 @@ function bodyRegion(p) {
 }
 const leftRight = (l, r) => p => (p.z < 0 ? l : r);
 
-// Decide a peça de uma malha pelo nome dela e dos grupos acima: um id, uma função por região, ou descarte.
+// Decide a peça de uma malha pelo nome dela e dos grupos acima: um id, uma função por região,
+// descarte, ou null para malha que aparece mas não aceita dano.
 function partForMesh(m) {
   const n = m.name;
   const ancestors = [];
   for (let o = m.parent; o; o = o.parent) ancestors.push(o.name || '');
   const under = s => ancestors.some(a => a.startsWith(s));
   if (n.includes('Shadowcap') || n.startsWith('Ext_Door_Limiter')) return { drop: true };
+  if (n.startsWith('Rim_') || n.startsWith('Tire_') || under('BRAKE_')) return null;
   for (const s of ['FL', 'FR', 'RL', 'RR']) {
-    if (n.startsWith(`Rim_${s}`) || n.startsWith(`Tire_${s}`) || under(`BRAKE_${s}`)) return `wheel-${s.toLowerCase()}`;
     if (under(`EXT_DOOR_${s}`) || under(`INT_DOOR_${s}`)) return `door-${s.toLowerCase()}`;
   }
-  if (under('BRAKE_REAR')) return { region: leftRight('wheel-rl', 'wheel-rr') };
   if (n.startsWith('Ext_Window_Rear')) return 'rear-glass';
   if (under('EXT_TRUNK_LID') || under('INT_TRUNK_LID') || n.startsWith('Ext_Trunk_Lid_Hyd')) return 'hatch';
   if (n.startsWith('Ext_Window_Windshield') || n.startsWith('Ext_Body_Window')) return 'windshield';
@@ -44,7 +44,6 @@ function partForMesh(m) {
   if (n.startsWith('Ext_Body#')) return { region: bodyRegion };
   if (n.startsWith('Ext_Body_Grille') || n.startsWith('Ext_Body_Front')) return 'bumper-f';
   if (n.startsWith('Ext_Body_Exhaust')) return 'bumper-r';
-  if (under('INTERIOR') || /^(Int|seat)/.test(n)) return 'cabin';
   return null;
 }
 
@@ -76,13 +75,13 @@ function splitMesh(mesh, regionOf) {
   return out;
 }
 
+// Fatias sem peça (assoalho, cabine) só fazem sombra. As outras entram no toque.
 function register(mesh, id) {
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-  mesh.material = mesh.material.clone(); // cada peça tem o próprio material para destacar sozinha
-  mesh.material.userData.base = mesh.material.color.getHex();
   const part = PART_BY_ID[id];
   if (!part) return;
+  mesh.material = mesh.material.clone(); // cada peça tem o próprio material para destacar sozinha
   mesh.userData.part = part;
   part.meshes.push(mesh);
   pickables.push(mesh);
@@ -113,9 +112,7 @@ export function loadModel({ onProgress, onLoad, onError }) {
         for (const [id, sub] of splitMesh(m, r.region)) { car.add(sub); register(sub, id); }
         continue;
       }
-      m.castShadow = true;
-      m.receiveShadow = true;
-      if (r) register(m, r);
+      register(m, r);
     }
     onLoad();
   }, ev => { if (ev.total) onProgress(ev.loaded / ev.total); }, onError);

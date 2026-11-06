@@ -1,4 +1,4 @@
-/* Danos: estado vazio, formulário do dano, lista de danos registrados e drawer de baixo no celular. */
+/* Danos: estado vazio, lista de danos em acordeão com o formulário e drawer de baixo no celular. */
 /* Estado vazio, no padrão PageEmptyState / Empty do frontend: centrado, ilustração, título e descrição. */
 .empty-state {
   min-height: 320px;
@@ -34,37 +34,6 @@
   font-size: 14px;
   line-height: 1.625;
   color: #4b5563;
-}
-
-@media (max-width: 760px) {
-  /* No celular o espaço é curto: o estado vazio e a lista já dizem o que fazer. */
-  .panel-intro {
-    display: none;
-  }
-
-  #panel {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .empty-state {
-    flex: 1;
-    min-height: 0;
-    padding-block: 8px;
-  }
-
-  .empty-state img {
-    width: 56px;
-    margin-bottom: 4px;
-  }
-
-  .empty-state h3 {
-    font-size: 18px;
-  }
-
-  .dmg-list {
-    margin-top: 8px;
-  }
 }
 
 /* Cabeçalho do formulário no drawer: número e peça */
@@ -301,4 +270,35 @@
 /* Logo após abrir, o drawer deixa passar o click atrasado do toque que o abriu (ver damages-panel.js). */
 .drawer.settling {
   pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  /* No celular o espaço é curto: o estado vazio e a lista já dizem o que fazer. */
+  .panel-intro {
+    display: none;
+  }
+
+  #panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .empty-state {
+    flex: 1;
+    min-height: 0;
+    padding-block: 8px;
+  }
+
+  .empty-state img {
+    width: 56px;
+    margin-bottom: 4px;
+  }
+
+  .empty-state h3 {
+    font-size: 18px;
+  }
+
+  .dmg-list {
+    margin-top: 8px;
+  }
 }

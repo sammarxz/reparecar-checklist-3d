@@ -1,7 +1,6 @@
 // Ponto de entrada: monta a cena, liga os eventos e carrega o modelo.
 import { VEHICLE } from './config.js';
 import { state } from './state.js';
-import { PARTS } from './data/parts.js';
 import { onFrame, startLoop } from './scene/renderer.js';
 import { updateCamera } from './scene/camera.js';
 import { loadModel, pickables } from './scene/model.js';
@@ -23,7 +22,10 @@ $('vMeta').innerHTML = [
 ].map(([icon, text]) => `<li>${icon}${text}</li>`).join('');
 
 // Rodapé. A ordem de serviço e o checklist ficam fora do protótipo.
-$('btnBack').addEventListener('click', () => toast('Volta para a ordem de serviço. Fora deste protótipo.'));
+// A seta do cabeçalho e o "Voltar" do rodapé levam ao mesmo lugar.
+const goBack = () => toast('Volta para a ordem de serviço. Fora deste protótipo.');
+$('btnBack').addEventListener('click', goBack);
+$('btnHeaderBack').addEventListener('click', goBack);
 $('btnNext').addEventListener('click', () => {
   if (state.draft) {
     toast('Conclua ou cancele o dano aberto antes de seguir.');
@@ -54,6 +56,3 @@ loadModel({
 });
 
 renderDamages();
-
-// Acesso para testes no console e nos checks automatizados.
-window.__proto = { PARTS, state, addDamage: startDamage };

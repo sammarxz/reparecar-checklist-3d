@@ -2,9 +2,11 @@
 import * as THREE from 'three';
 import { camera } from './renderer.js';
 
-export const orbit = { theta: -0.75, phi: 1.12, r: 10, target: new THREE.Vector3(0, 0.55, 0) };
 const ISO_VIEW = [-0.75, 1.12]; // 3/4 dianteiro esquerdo
 const DEFAULT_R = 10;
+const HOME_TARGET = new THREE.Vector3(0, 0.55, 0);
+const orbit = { theta: ISO_VIEW[0], phi: ISO_VIEW[1], r: DEFAULT_R, target: HOME_TARGET.clone() };
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const clamp1 = v => Math.max(-1, Math.min(1, v));
 let goal = null;
 
@@ -15,15 +17,16 @@ function setGoal(theta, phi, r, target) {
 
 export function resetView() {
   const [theta, phi] = ISO_VIEW;
-  setGoal(theta, phi, DEFAULT_R, new THREE.Vector3(0, 0.55, 0));
+  setGoal(theta, phi, DEFAULT_R, HOME_TARGET.clone());
 }
 
 // Enquadra um ponto da lataria, usado pelos pinos de dano.
 export function focusPoint(c) {
-  let theta = Math.atan2(c.z, c.x), phi = 1.05;
-  if (Math.abs(c.z) < 0.35) theta = c.x > 0 ? -0.5 : Math.PI + 0.5;
-  else theta = Math.sign(c.z) * (Math.PI / 2 - clamp1(c.x) * 0.5);
-  if (c.y > 1.2) phi = 0.7;
+  // Ponto no meio do carro (capô, teto, para-choques): vista 3/4 de frente ou de trás. Nas laterais: de lado.
+  const theta = Math.abs(c.z) < 0.35
+    ? (c.x > 0 ? -0.5 : Math.PI + 0.5)
+    : Math.sign(c.z) * (Math.PI / 2 - clamp1(c.x) * 0.5);
+  const phi = c.y > 1.2 ? 0.7 : 1.05;
   setGoal(theta, phi, DEFAULT_R * 0.5, new THREE.Vector3(c.x * 0.7, c.y * 0.75 + 0.15, c.z * 0.6));
 }
 
@@ -40,7 +43,7 @@ export function zoomBy(delta) {
 
 export function updateCamera() {
   if (goal) {
-    const k = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.1;
+    const k = reducedMotion.matches ? 1 : 0.1;
     orbit.theta += (goal.theta - orbit.theta) * k;
     orbit.phi += (goal.phi - orbit.phi) * k;
     orbit.r += (goal.r - orbit.r) * k;

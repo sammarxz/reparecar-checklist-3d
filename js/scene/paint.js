@@ -5,7 +5,7 @@ import { PART_BY_ID } from '../data/parts.js';
 let hovered = null;
 export const getHovered = () => hovered;
 
-export function paintPart(part) {
+function paintPart(part) {
   const selected = state.selected === part.id;
   const hex = selected ? 0xff7439 : part.id === hovered ? 0xff9a66 : 0x000000;
   const intensity = selected ? 0.42 : part.id === hovered ? 0.1 : 0;

@@ -29,13 +29,13 @@ O IPv4 aparece em `ipconfig`, no adaptador Wi-Fi. `?debug=1` mostra no canto do 
   css/
     tokens.css            variáveis do produto, reset e base
     layout.css            trilho lateral, página, cabeçalho, grade
-    components.css        botão, chip, campos, caixa de upload, toast
+    components.css        botão, campos, caixa de upload, toast
     viewer.css            palco 3D, cabeçalho do veículo, pinos, carregamento
     panel.css             painel da direita: corpo com rolagem e rodapé fixo
-    damages.css           estado vazio, formulário de dano, lista de danos, drawer
+    damages.css           estado vazio, lista de danos em acordeão, drawer
   js/
     main.js               entrada: liga cena, painel e rodapé; carrega o modelo
-    config.js             URL do modelo, cor da pintura, quebra de layout, veículo
+    config.js             URL do modelo, cor da pintura, quebra de layout, dados do veículo
     data/parts.js         peças que aceitam dano, lado de cada uma, tipos de avaria
     state.js              estado: danos registrados, dano aberto, rascunho
     scene/renderer.js     renderer, cena, luzes, piso, loop de quadros
@@ -56,13 +56,18 @@ Dependências entre camadas: `data` não importa nada; `state` não importa nada
 
 - Sidebar e logo do produto. Rodapé com "Voltar" e "Ir para checklist"; os dois só avisam, porque a ordem de serviço e
   o checklist ficam fora do protótipo. "Ir para checklist" pede para concluir ou cancelar um dano aberto.
+- Sobre o carro, o topo segue o cartão de OS do mecânico: modelo e ano, selo de status, cliente, OS, cor e
+  quilometragem. No celular ficam só modelo, status e cliente.
 - Registro livre e opcional. Sem dano, o estado vazio explica como registrar.
-- Só lataria, vidros, faróis e lanternas respondem ao toque. O toque cria um rascunho com pino provisório e abre o
-  formulário: peça e lado já preenchidos, avaria em select, caixa de upload e observação. O dano só entra na lista em
-  "Concluir dano"; "Cancelar" descarta. Avaria é obrigatória.
-- No celular e em tela empilhada até 1100 px, o formulário abre num drawer de baixo, com a base do
-  `responsive-modal.ts` do produto. No celular a página tem a altura da tela e o rodapé fica sempre visível.
-- A lista "Danos registrados" mostra 01, 02... Tocar na linha gira o carro até o pino. A lixeira remove.
+- Só lataria, vidros, faróis e lanternas respondem ao toque. O toque cria um rascunho com pino tracejado e abre o
+  formulário: avaria em select, caixa de upload e observação. O dano só entra na lista em "Concluir dano";
+  "Cancelar" descarta. Avaria é obrigatória.
+- Cada dano é um card que expande no lugar com o formulário, um card aberto por vez. Abrir um card gira o carro até o
+  pino. A lixeira remove.
+- No desktop o dano novo entra como último card, já aberto. No celular e em tela empilhada até 1100 px, ele abre num
+  drawer de baixo, com a base do `responsive-modal.ts` do produto. No celular a página tem a altura da tela e o
+  rodapé fica sempre visível.
+- O pino some quando o ponto marcado fica do outro lado do carro.
 
 ## Peças do modelo
 
