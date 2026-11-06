@@ -13,7 +13,6 @@ import { startDamage, selectDamage } from './ui/actions.js';
 
 // Cabeçalho da página e do veículo
 $('title').textContent = `Danos · ${VEHICLE.plate}`;
-document.querySelector('.plate').textContent = VEHICLE.plate;
 $('vName').textContent = VEHICLE.name;
 $('vMeta').textContent = `${VEHICLE.owner} · Atendimento nº ${VEHICLE.serviceOrder}`;
 $('vChips').innerHTML = VEHICLE.chips.map(c => `<span class="chip">${c}</span>`).join('') + '<span class="chip accent">Em elaboração</span>';

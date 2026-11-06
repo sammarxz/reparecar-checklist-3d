@@ -263,6 +263,11 @@
   transform: translateY(0);
 }
 
+/* Logo após abrir, o drawer deixa passar o click atrasado do toque que o abriu (ver damages-panel.js). */
+.drawer.settling {
+  pointer-events: none;
+}
+
 /* Em tela empilhada o formulário vive no drawer, não no painel */
 @media (max-width: 1100px) {
   .panel .dmg-form {

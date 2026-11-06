@@ -16,6 +16,7 @@
   --problem: #e6352b;
   --pill: #f2f4f7;
   --surface-muted: #e9eaeb; /* cinza do contêiner de abas do produto: palco 3D e chips */
+  --surface-muted-strong: #dcdee1; /* um tom abaixo, para chips sobre o palco */
   --shadow: 0 1px 2px rgba(10, 13, 18, 0.05);
   --shadow-raised: 0 10px 30px rgba(10, 13, 18, 0.2);
   --font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;

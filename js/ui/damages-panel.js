@@ -56,8 +56,15 @@ export function renderDamages() {
 
   // Em tela empilhada o formulário vai para o drawer; no desktop fica no painel.
   const useDrawer = stacked.matches;
+  const opening = useDrawer && Boolean(sel) && !drawer.classList.contains('open');
   sheet.innerHTML = useDrawer ? form : '';
   drawer.classList.toggle('open', useDrawer && Boolean(sel));
+  if (opening) {
+    // No celular o toque gera um click atrasado no mesmo ponto. Sem esta pausa ele cai no fundo
+    // do drawer recém-aberto e o fecha na hora, ou aperta o botão que estiver ali.
+    drawer.classList.add('settling');
+    setTimeout(() => drawer.classList.remove('settling'), 400);
+  }
   bindDamages(sel, useDrawer ? sheet : panel);
 }
 

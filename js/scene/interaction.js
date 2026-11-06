@@ -11,7 +11,7 @@ const PICK_INTERVAL = 40; // ms: raycast em 366 mil triângulos não roda a cada
 
 let pickables = [];
 let tapHandler = () => {};
-let drag = null, moved = 0, lastPick = 0, lastTapAt = 0, lastHit = null;
+let drag = null, moved = 0, lastPick = 0, lastHit = null;
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
 
 export function setPickables(list) { pickables = list; }
@@ -36,7 +36,6 @@ function tapAt(e, source) {
   const id = getHovered();
   debugLine(`${source} · ${id ? `peça: ${id}` : 'nada sob o toque'}`);
   if (!id) return;
-  lastTapAt = performance.now();
   tapHandler(id, lastHit.point.clone());
 }
 
@@ -57,7 +56,5 @@ canvas.addEventListener('pointerup', e => {
   if (drag && moved < TAP_MAX_MOVE) tapAt(e, `pointerup ${e.pointerType}`);
   drag = null;
 });
-// Fallback: navegador que não entrega pointerup no canvas ainda dispara click.
-canvas.addEventListener('click', e => { if (performance.now() - lastTapAt > 400) tapAt(e, 'click'); });
 canvas.addEventListener('pointerleave', () => { drag = null; setHover(null); });
 canvas.addEventListener('wheel', e => { e.preventDefault(); zoomBy(e.deltaY); }, { passive: false });
