@@ -1,0 +1,72 @@
+/* Tokens do produto RepareCar e base da página. Cores e fonte iguais ao frontend. */
+:root {
+  --bg: #f7f7f7;
+  --card: #ffffff;
+  --border: #e9eaeb;
+  --border-strong: #d5d7da;
+  --text: #181d27;
+  --heading: #252b37;
+  --body: #414651;
+  --subtle: #717680;
+  --muted: #a4a7ae;
+  --accent: #ff7439;
+  --accent-hover: #ff8b39;
+  --accent-soft: #fff7f4;
+  --accent-border: #f2d6cc;
+  --ok: #079455;
+  --ok-border: #18b368;
+  --ok-soft: #eef9f1;
+  --problem: #e6352b;
+  --problem-border: #f04438;
+  --problem-soft: #fff1f0;
+  --warn: #b54708;
+  --warn-soft: #fffaeb;
+  --pill: #f2f4f7;
+  --surface-muted: #e9eaeb; /* contêiner do seletor de abas do produto; também cards de resumo e palco 3D */
+  --shadow: 0 1px 2px rgba(10, 13, 18, 0.05);
+  --shadow-raised: 0 10px 30px rgba(10, 13, 18, 0.2);
+  --font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --radius-card: 18px;
+  --radius-item: 16px;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(255, 116, 57, 0.45);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

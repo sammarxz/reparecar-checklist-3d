@@ -1,0 +1,231 @@
+/* Casca do app: trilho lateral, página, cabeçalho, seletor de abas e grade dos dois cartões. */
+.app {
+  display: flex;
+  height: 100vh;
+  min-height: 100%;
+}
+
+/* Trilho lateral, copiado do componente side-bar do frontend */
+.rail {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 16px;
+  background: var(--bg);
+}
+
+.rail .logo {
+  display: flex;
+  padding-block: 20px;
+}
+
+.rail .logo img {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+.rail .menu {
+  margin-top: 32px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.rail .menu button {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  transition: all 0.3s;
+}
+
+.rail .menu button:hover {
+  background: rgba(255, 116, 57, 0.9);
+  color: #fff;
+}
+
+.rail .menu button[data-active] {
+  background: var(--accent);
+  color: #fff;
+}
+
+.rail .sep {
+  width: 42px;
+  height: 1px;
+  background: var(--border-strong);
+  opacity: 0.3;
+}
+
+.rail .avatar {
+  margin-block: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #f0932b;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Página */
+.page {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 8px 16px;
+}
+
+.inner {
+  max-width: 1400px;
+  width: 100%;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  flex: 1;
+}
+
+.page-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-block: 16px;
+  padding-bottom: 8px;
+  min-height: 48px;
+}
+
+.page-header .back {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+}
+
+.page-header .back:hover {
+  background: var(--border);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--heading);
+  line-height: 1.2;
+}
+
+/* Seletor Danos / Checklist, largura total.
+   Mesmo estilo do produto: contêiner tablist de routes/_app/finance/_finance.tsx e componente ui/tab.tsx. */
+.tabs {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 900px;
+  background: var(--surface-muted);
+}
+
+.tabs button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 42px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  transition: background-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.tabs button[aria-selected="true"] {
+  background: #fff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Lugar do seletor dentro do painel, no desktop: depois do cabeçalho de cada aba */
+.tabs-slot {
+  margin-top: 16px;
+}
+
+@media (max-width: 760px) {
+  .tabs-slot {
+    display: none;
+  }
+}
+
+/* Grade: carro à esquerda, painel à direita, altura total */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 460px;
+  gap: 16px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 1100px) {
+  .app {
+    height: auto;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    flex: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .rail {
+    display: none;
+  }
+
+  /* Celular: a tela inteira tem a altura da janela; o painel ocupa o que sobra e rola por dentro. */
+  .app {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .grid {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  body[data-tab="checklist"] .viewer {
+    display: none;
+  }
+}

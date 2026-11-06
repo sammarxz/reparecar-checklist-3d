@@ -1,0 +1,271 @@
+/* Aba Danos: formulário do dano, lista de danos registrados e drawer de baixo no celular. */
+/* Estado vazio, no padrão PageEmptyState / Empty do frontend: centrado, ilustração, título e descrição. */
+.empty-state {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 16px 40px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.empty-state img {
+  width: 96px;
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.empty-state h3 {
+  margin: 0;
+  max-width: 20ch;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #000;
+}
+
+.empty-state p {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 14px;
+  line-height: 1.625;
+  color: #4b5563;
+}
+
+@media (max-width: 760px) {
+  /* No celular o espaço é curto: o estado vazio e a lista já dizem o que fazer. */
+  .panel-intro {
+    display: none;
+  }
+
+  body[data-tab="damages"] #panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .empty-state {
+    flex: 1;
+    min-height: 0;
+    padding-block: 8px;
+  }
+
+  .empty-state img {
+    width: 56px;
+    margin-bottom: 4px;
+  }
+
+  .empty-state h3 {
+    font-size: 18px;
+  }
+
+  .dmg-list {
+    margin-top: 8px;
+  }
+}
+
+.dmg-form {
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  border-radius: var(--radius-item);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.dmg-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dmg-head b {
+  display: block;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.dmg-head small {
+  font-size: 12px;
+  color: var(--subtle);
+}
+
+.dmg-form .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dmg-form .row .btn {
+  height: 40px;
+  font-size: 13px;
+}
+
+.dmg-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-item);
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.dmg-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 0;
+  background: #fff;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font: inherit;
+  color: var(--text);
+}
+
+.dmg-row:last-child {
+  border-bottom: 0;
+}
+
+.dmg-row:hover,
+.dmg-row.sel {
+  background: var(--accent-soft);
+}
+
+.dmg-row .n {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--subtle);
+  width: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dmg-row .t {
+  flex: 1;
+  min-width: 0;
+}
+
+.dmg-row .t b {
+  display: block;
+  font-weight: 600;
+}
+
+.dmg-row .t span {
+  font-size: 12px;
+  color: var(--subtle);
+}
+
+.dmg-row .del {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.dmg-row .del:hover {
+  color: var(--problem);
+  background: #fff;
+}
+
+/* Drawer de baixo, com a base do responsive-modal do produto */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.drawer .scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 13, 18, 0.45);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+
+.drawer .sheet {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  max-height: calc(100dvh - 1rem);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-raised);
+  transform: translateY(calc(100% + 16px));
+  transition: transform 0.4s var(--ease);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.drawer .sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 8px;
+}
+
+.drawer .sheet-head b {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.drawer .sheet-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--subtle);
+  display: grid;
+  place-items: center;
+}
+
+.drawer .sheet-close:hover {
+  background: var(--pill);
+}
+
+.drawer .sheet-body {
+  overflow: auto;
+  padding: 0 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+}
+
+.drawer .sheet-body .dmg-form {
+  margin-top: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.drawer.open {
+  pointer-events: auto;
+}
+
+.drawer.open .scrim {
+  opacity: 1;
+}
+
+.drawer.open .sheet {
+  transform: translateY(0);
+}
+
+/* Em tela empilhada o formulário vive no drawer, não no painel */
+@media (max-width: 1100px) {
+  body[data-tab="damages"] .panel .dmg-form {
+    display: none;
+  }
+}
