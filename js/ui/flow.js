@@ -1,22 +1,21 @@
-// Navegação do protótipo: a ordem de serviço e os três passos do checklist (danos, itens e orçamento).
+// Navegação do protótipo: a ordem de serviço e os dois passos do checklist (danos e itens).
 import { state } from '../state.js';
 import { VEHICLE } from '../config.js';
 import { $, toast } from './dom.js';
 import { renderOs } from './os-page.js';
 import { renderDamages } from './damages-panel.js';
 import { renderItems } from './checklist-items.js';
-import { renderBudget } from './budget.js';
 
-const VIEWS = { os: $('viewOs'), damages: $('viewDamages'), items: $('viewItems'), budget: $('viewBudget') };
-const RENDER = { os: renderOs, damages: renderDamages, items: renderItems, budget: renderBudget };
+const VIEWS = { os: $('viewOs'), damages: $('viewDamages'), items: $('viewItems') };
+const RENDER = { os: renderOs, damages: renderDamages, items: renderItems };
 
-// Títulos e imagens das etapas. As imagens vêm de apps/frontend/public/images.
+// Títulos e imagens das etapas. As imagens vêm de apps/frontend/public/images:
+// onboarding/funilaria-pintura.webp e image-d7.webp, a prancheta da tela de sucesso do orçamento.
 const STEPS = {
-  damages: { n: 1, title: 'Marque os danos na carroceria', image: 'assets/steps/car-broken.webp' },
-  items: { n: 2, title: 'Faça a inspeção do veículo', image: 'assets/steps/tool-box.webp' },
-  budget: { n: 3, title: 'Orçamento criado', image: 'assets/steps/budget.webp' },
+  damages: { n: 1, title: 'Marque os danos na carroceria', image: 'assets/steps/funilaria.webp' },
+  items: { n: 2, title: 'Faça a inspeção do veículo', image: 'assets/steps/checklist.webp' },
 };
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 2;
 const stepCard = $('stepCard');
 
 export function go(view) {

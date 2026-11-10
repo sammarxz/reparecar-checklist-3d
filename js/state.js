@@ -1,11 +1,11 @@
 // Estado do protótipo. Sem DOM e sem three.js.
 export const state = {
-  // Fluxo: 'os' é a ordem de serviço; 'damages', 'items' e 'budget' são os passos do checklist.
+  // Fluxo: 'os' é a ordem de serviço; 'damages' e 'items' são os passos do checklist.
   view: 'os',
   osTab: 'checklist',
   checklistCreated: false,
   bodywork: null, // resposta a "Existe dano de funilaria?": sem dano, o checklist pula a etapa de danos
-  checklistSaved: false, // salvo uma vez: o orçamento já existe e salvar de novo só volta para a OS
+  checklistSaved: false, // salvo uma vez: o orçamento já existe e o rodapé passa a "Cancelar" e "Salvar Checklist"
 
   // Danos na carroceria
   selected: null, // peça em destaque no carro

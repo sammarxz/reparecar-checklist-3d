@@ -3,7 +3,7 @@
 import { state, itemOf, setItem } from '../state.js';
 import { CATEGORIES, ITEM_NAMES, SIDE_OPTIONS, TIME_OPTIONS, formatMinutes, itemImage } from '../data/checklist.js';
 import { PART_BY_ID } from '../data/parts.js';
-import { $, esc, pad2, ICONS, UPLOAD_BOX, bindUploadStubs } from './dom.js';
+import { $, esc, pad2, toast, ICONS, UPLOAD_BOX, bindUploadStubs } from './dom.js';
 import { go } from './flow.js';
 
 const body = $('itemsBody');
@@ -132,15 +132,13 @@ body.addEventListener('input', e => {
   setItem(e.target.closest('[data-item]').dataset.item, { desc: e.target.value });
 });
 
-// Primeiro salvamento cria o orçamento; os seguintes, como a edição do produto, só voltam para a OS.
+// No produto, o primeiro salvamento cria o orçamento e abre a tela dele, que fica fora do protótipo.
+// Aqui os dois casos voltam para a OS, com o checklist pronto na aba.
 function finish() {
   showErrors = false;
-  if (state.checklistSaved) {
-    go('os');
-    return;
-  }
+  if (!state.checklistSaved) toast('Orçamento criado. A tela do orçamento fica fora deste protótipo.');
   state.checklistSaved = true;
-  go('budget');
+  go('os');
 }
 
 function openPending(names) {

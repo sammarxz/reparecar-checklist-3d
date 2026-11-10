@@ -1,4 +1,4 @@
-/* Passo Checklist com os valores de components/pages/checklist do produto, modais e orçamento. */
+/* Passo Checklist com os valores de components/pages/checklist do produto, painel de resumo e modais. */
 
 /* Cartão do checklist na coluna principal da grade, com rolagem própria */
 .ck-card {
@@ -294,20 +294,6 @@
   color: #22c55e;
 }
 
-/* Orçamento */
-.budget-view h2 {
-  margin: 8px 0 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--heading);
-}
-
-.budget-view .sub {
-  margin-top: 4px;
-  font-size: 13px;
-  color: var(--subtle);
-}
-
 .ck-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -332,25 +318,6 @@
 .ck-stats span {
   font-size: 12px;
   color: var(--subtle);
-}
-
-.budget-list {
-  margin: 0 0 16px;
-  padding: 0;
-  list-style: none;
-}
-
-.budget-list li {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.budget-list span {
-  color: var(--subtle);
-  font-variant-numeric: tabular-nums;
 }
 
 /* Painel de resumo do checklist */
