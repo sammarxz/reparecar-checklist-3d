@@ -1,7 +1,9 @@
-# Protótipo: registro de danos 3D com o Golf GTI
+# Protótipo: checklist com registro de danos 3D
 
-Protótipo da etapa de danos do RepareCar, antes do checklist do mecânico: o mecânico toca na lataria do carro 3D no
-ponto do dano e registra a avaria. Página estática, sem build. O modelo fica em `assets/models/golf-gti-2025.glb` (19 MB).
+Protótipo do checklist do RepareCar com uma etapa nova de danos na carroceria. O fluxo começa na ordem de serviço,
+passa por Danos, Checklist e Orçamento, e volta para a OS com o checklist pronto para imprimir. Na etapa de danos o
+mecânico toca na lataria do carro 3D no ponto do dano. Página estática, sem build. O modelo fica em
+`assets/models/golf-gti-2025.glb` (19 MB).
 
 Publicado pelo GitHub Pages a partir da raiz da branch `main`: https://sammarxz.github.io/reparecar-checklist-3d/
 `.nojekyll` desliga o build do Jekyll. O `netlify.toml` continua no repositório para quem publica pelo Netlify.
@@ -34,12 +36,15 @@ O IPv4 aparece em `ipconfig`, no adaptador Wi-Fi. `?debug=1` mostra no canto do 
     viewer.css            palco 3D, cabeçalho do veículo, pinos, carregamento
     panel.css             painel da direita: corpo com rolagem e rodapé fixo
     damages.css           estado vazio, lista de danos em acordeão, drawer
+    os.css                barra de passos, ordem de serviço e abas
+    checklist.css         itens mecânicos, diálogo de pendentes, orçamento
     report.css            relatório na tela e folha A4 na impressão
   js/
-    main.js               entrada: liga cena, painel e rodapé; carrega o modelo
+    main.js               entrada: liga cena e rodapé, carrega o modelo e abre a OS
     config.js             URL do modelo, cor da pintura, quebra de layout, dados do veículo
     data/parts.js         peças que aceitam dano, lado de cada uma, tipos de avaria
-    state.js              estado: danos registrados, dano aberto, rascunho
+    data/checklist.js     os 45 itens do seed do produto, lados, tempos e imagens
+    state.js              estado: vista atual, danos, rascunho e itens do checklist
     scene/renderer.js     renderer, cena, luzes, piso, loop de quadros
     scene/model.js        carga do GLB e fatiamento da carroceria por região
     scene/camera.js       órbita, vista padrão, foco num ponto
@@ -49,17 +54,35 @@ O IPv4 aparece em `ipconfig`, no adaptador Wi-Fi. `?debug=1` mostra no canto do 
     ui/dom.js             referências de DOM, escape, ícones, toast, diagnóstico
     ui/actions.js         ações: tocar na lataria, abrir, concluir e remover dano
     ui/damages-panel.js   painel de danos e drawer
-    ui/report.js          relatório: cinco vistas do carro com os danos, lista e assinaturas
+    ui/report.js          relatório: cinco vistas do carro, danos, itens com problema e assinaturas
+    ui/flow.js            troca de vista, barra de passos e título
+    ui/os-page.js         ordem de serviço: cartão do veículo, abas e aba Checklist
+    ui/checklist-items.js passo Checklist: categorias, Ok e Problema, validação ao salvar
+    ui/budget.js          passo Orçamento: resumo do que o orçamento recebe
 ```
 
 Dependências entre camadas: `data` não importa nada; `state` não importa nada; `scene` importa `data` e `state`;
 `ui` importa tudo. `ui/actions.js` é o único lugar que combina cena e painel. `ui/report.js` só lê a cena
 para fotografar o carro.
 
-## O que a página faz
+## Fluxo
 
-- Sidebar e logo do produto. Rodapé com "Voltar" e "Ir para checklist"; os dois só avisam, porque a ordem de serviço e
-  o checklist ficam fora do protótipo. "Ir para checklist" pede para concluir ou cancelar um dano aberto.
+1. **Ordem de serviço.** Cartão do veículo e as abas do modal da OS: Geral, Checklist, Orç., Notas e Histórico.
+   Só a aba Checklist funciona. Sem checklist, ela mostra "Criar checklist", como o produto.
+2. **Danos.** O carro 3D e o painel de danos. "Voltar" leva para a OS; "Ir para checklist" segue. Os dois pedem para
+   concluir ou cancelar um dano aberto.
+3. **Checklist.** Os 45 itens do seed do produto, em 6 categorias recolhíveis, com a imagem de cada item. Problema
+   pede lado e tempo estimado, com as opções do produto. Ao salvar, item sem resposta vira Ok depois de confirmar.
+4. **Orçamento.** No produto, o primeiro salvamento cria o orçamento e abre a tela dele. Aqui fica o resumo: itens
+   com problema, tempo estimado e danos. Preços e peças ficam fora do protótipo.
+5. **OS com o checklist pronto.** A aba Checklist mostra as cinco vistas com os números, a lista de danos e os itens
+   com problema por categoria. "Editar checklist" volta para Danos; salvar de novo volta para a OS, como a edição do
+   produto. A impressora abre o checklist para impressão.
+
+A barra de passos alterna entre Danos e Checklist. Orçamento só chega salvando. A seta do cabeçalho volta para a OS.
+
+## Etapa de danos
+
 - Sobre o carro, o topo segue o cartão de OS do mecânico: modelo e ano, selo de status, cliente, OS, cor e
   quilometragem. No celular ficam só modelo, status e cliente.
 - Registro livre e opcional. Sem dano, o estado vazio explica como registrar.
@@ -72,16 +95,16 @@ para fotografar o carro.
   drawer de baixo, com a base do `responsive-modal.ts` do produto. No celular o card de danos tem a altura do
   conteúdo, quem rola é a página, e o rodapé fica preso no fim da tela.
 - O pino some quando o ponto marcado fica do outro lado do carro.
-- "Ver relatório", ao lado de "Danos registrados", abre o relatório para imprimir: dados da OS e do veículo, o carro
-  de cima, dos dois lados, de frente e de trás, a lista de danos e as linhas de assinatura. "Imprimir" usa a
-  impressão do navegador, que salva em PDF.
+- "Ver relatório", ao lado de "Danos registrados", e a impressora da OS abrem o checklist para impressão: dados da
+  OS e do veículo, o carro de cima, dos dois lados, de frente e de trás, a lista de danos, os itens com problema
+  depois de salvo e as linhas de assinatura. "Imprimir" usa a impressão do navegador, que salva em PDF.
 
 ## Como o relatório desenha o carro
 
 As cinco vistas saem do mesmo GLB, por câmeras ortográficas, em `js/ui/report.js`. Não há ilustração separada.
 Cada dano aparece numa vista só: a mais de frente para a face tocada, pela normal guardada no toque. O ponto 3D é
 projetado pela câmera dessa vista, então o número cai onde o mecânico tocou. A imagem sai 3 vezes maior que na
-tela, para a impressão ficar nítida.
+tela, para a impressão ficar nítida. As vistas não mudam com os danos: saem uma vez e ficam guardadas.
 
 ## Peças do modelo
 
@@ -90,7 +113,9 @@ Portas, tampa, luzes e vidros vêm separados no GLB. Capô, teto, paralamas e pa
 
 ## O que o produto precisaria
 
-- Uma entidade `checklistDamages` com `checklistId`, peça, ponto no modelo, tipo, observação e mídia.
+- Uma entidade `checklistDamages` com `checklistId`, peça, ponto no modelo, tipo, observação e mídia. A tabela
+  `checklistItems` não serve: ela tem uma linha por item de template.
+- Uma etapa de danos antes do formulário atual em `/checklists/<id>`, sem mudar o envio que cria o orçamento.
 - Um GLB por modelo ou por tipo de carroceria, com o mapa de peças.
 - Guardar no dano o ponto e a normal, para o relatório redesenhar o carro depois.
 - Gerar o PDF no produto, como o orçamento faz com `@react-pdf/renderer`, para guardar na OS e enviar ao cliente.

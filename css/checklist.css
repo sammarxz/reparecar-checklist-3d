@@ -1,0 +1,306 @@
+/* Passo Checklist: resumo, categorias recolhíveis, itens com Ok ou Problema, diálogo de pendentes e orçamento. */
+.ck-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-block: 16px;
+}
+
+.ck-stats > div {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.ck-stats b {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.ck-stats b small {
+  font-size: 13px;
+  color: var(--subtle);
+}
+
+.ck-stats span {
+  font-size: 12px;
+  color: var(--subtle);
+}
+
+/* Categoria recolhível com animação de altura */
+.cat {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-item);
+  background: #fff;
+}
+
+.cat-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: calc(var(--radius-item) - 1px);
+  background: #fff;
+  text-align: left;
+  color: var(--heading);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.cat-head:hover {
+  background: #fafafa;
+}
+
+.cat-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.cat .count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--subtle);
+  background: var(--surface-muted);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cat .count.part {
+  color: var(--warn);
+  background: var(--warn-soft);
+}
+
+.cat .count.full {
+  color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.cat .chev {
+  color: var(--muted);
+  transition: transform 0.25s var(--ease);
+}
+
+.cat.open .chev {
+  transform: rotate(180deg);
+}
+
+.cat-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease);
+}
+
+.cat.open .cat-body {
+  grid-template-rows: 1fr;
+}
+
+.cat-items {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-inline: 12px;
+}
+
+.cat.open .cat-items {
+  padding-bottom: 12px;
+}
+
+/* Item: imagem do produto, nome e os botões Ok e Problema */
+.ck-item {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-item);
+  background: #fff;
+  padding: 12px;
+  transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+
+.ck-item.ok {
+  border-color: var(--ok-border);
+  background: var(--ok-soft);
+}
+
+.ck-item.problem {
+  border-color: var(--problem-border);
+  background: var(--problem-soft);
+}
+
+.ck-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ck-icon {
+  flex: none;
+  border-radius: 14px;
+  object-fit: cover;
+  background: var(--pill);
+}
+
+.ck-name {
+  flex: 1;
+  min-width: 120px;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.ck-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.st {
+  height: 44px;
+  min-width: 104px;
+  padding-inline: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.st.on-ok {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+
+.st.on-problem {
+  background: var(--problem);
+  border-color: var(--problem);
+  color: #fff;
+}
+
+/* Formulário do problema entra animado */
+.ck-fields {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease);
+}
+
+.ck-fields.open {
+  grid-template-rows: 1fr;
+}
+
+.ck-fields-inner {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ck-fields.open .ck-fields-inner {
+  padding-top: 12px;
+}
+
+.ck-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field.invalid select {
+  border-color: var(--problem-border);
+}
+
+.field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--problem);
+}
+
+/* Confirmação dos itens sem resposta */
+.confirm {
+  width: min(400px, calc(100% - 32px));
+  padding: 24px;
+  border: 0;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(10, 13, 18, 0.2);
+  color: var(--text);
+}
+
+.confirm::backdrop {
+  background: rgba(10, 13, 18, 0.45);
+}
+
+.confirm h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.confirm p {
+  margin: 8px 0 20px;
+  color: var(--subtle);
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Orçamento */
+.budget-list {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.budget-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.budget-list span {
+  color: var(--subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.budget-view .foot {
+  justify-content: flex-end;
+}
+
+.budget-view .foot .btn {
+  flex: none;
+  min-width: 220px;
+}
+
+@media (max-width: 760px) {
+  .ck-actions {
+    flex-basis: 100%;
+  }
+
+  .st {
+    flex: 1;
+  }
+
+  .ck-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ck-stats b {
+    font-size: 17px;
+  }
+
+  .budget-view .foot .btn {
+    flex: 1;
+  }
+}

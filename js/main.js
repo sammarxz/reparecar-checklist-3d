@@ -1,17 +1,15 @@
-// Ponto de entrada: monta a cena, liga os eventos e carrega o modelo.
+// Ponto de entrada: monta a cena, liga os eventos, carrega o modelo e abre a ordem de serviço.
 import { VEHICLE } from './config.js';
-import { state } from './state.js';
 import { onFrame, startLoop } from './scene/renderer.js';
 import { updateCamera } from './scene/camera.js';
 import { loadModel, pickables } from './scene/model.js';
 import { onTap, setPickables } from './scene/interaction.js';
 import { onMarkerClick, updateMarkers } from './scene/markers.js';
-import { $, refs, toast, ICONS } from './ui/dom.js';
-import { renderDamages } from './ui/damages-panel.js';
+import { $, refs, ICONS } from './ui/dom.js';
 import { startDamage, selectDamage } from './ui/actions.js';
+import { go, leaveDamages } from './ui/flow.js';
 
-// Cabeçalho da página e do veículo
-$('title').textContent = `Danos · ${VEHICLE.plate}`;
+// Cabeçalho do veículo sobre o carro
 $('vName').textContent = `${VEHICLE.name} (${VEHICLE.year})`;
 $('vStatus').textContent = VEHICLE.status;
 $('vOwner').textContent = VEHICLE.owner;
@@ -21,20 +19,9 @@ $('vMeta').innerHTML = [
   [ICONS.gauge, VEHICLE.mileage],
 ].map(([icon, text]) => `<li>${icon}${text}</li>`).join('');
 
-// Rodapé. A ordem de serviço e o checklist ficam fora do protótipo.
-// A seta do cabeçalho e o "Voltar" do rodapé levam ao mesmo lugar.
-const goBack = () => toast('Volta para a ordem de serviço. Fora deste protótipo.');
-$('btnBack').addEventListener('click', goBack);
-$('btnHeaderBack').addEventListener('click', goBack);
-$('btnNext').addEventListener('click', () => {
-  if (state.draft) {
-    toast('Conclua ou cancele o dano aberto antes de seguir.');
-    return;
-  }
-  const n = state.damages.length;
-  const registered = n === 0 ? 'Sem danos' : n === 1 ? '1 dano registrado' : `${n} danos registrados`;
-  toast(`${registered}. O checklist fica fora deste protótipo.`);
-});
+// Rodapé do passo de danos
+$('btnBack').addEventListener('click', () => leaveDamages('os'));
+$('btnNext').addEventListener('click', () => leaveDamages('items'));
 
 // Cena
 onTap(startDamage);
@@ -55,4 +42,4 @@ loadModel({
   },
 });
 
-renderDamages();
+go('os');

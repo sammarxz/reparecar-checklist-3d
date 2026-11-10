@@ -1,10 +1,11 @@
-// Relatório de danos para impressão: o carro em cinco vistas, com o número de cada dano no ponto tocado,
-// e a lista dos danos. As vistas saem do mesmo modelo 3D, então o número cai onde o mecânico marcou.
+// Relatório do checklist para impressão: o carro em cinco vistas, com o número de cada dano no ponto tocado,
+// a lista dos danos e os itens mecânicos com problema. As vistas saem do mesmo modelo 3D.
 import * as THREE from 'three';
 import { car, snapshot } from '../scene/renderer.js';
 import { setSelected, setHover } from '../scene/paint.js';
-import { state } from '../state.js';
+import { state, itemOf } from '../state.js';
 import { PART_BY_ID, SIDE_LABEL } from '../data/parts.js';
+import { ITEM_NAMES, CATEGORY_OF, ITEM_SIDE_LABEL, formatMinutes } from '../data/checklist.js';
 import { VEHICLE } from '../config.js';
 import { $, esc, pad2 } from './dom.js';
 
@@ -23,6 +24,7 @@ const VIEWS = [
 
 const root = $('report');
 const v3 = new THREE.Vector3();
+let shots = null; // as vistas não mudam com os danos: fotografa uma vez
 
 // Largura e altura do carro vistas por esta câmera, em metros.
 function extent(size, axis) {
@@ -34,7 +36,11 @@ function shootViews() {
   const box = new THREE.Box3().setFromObject(car);
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3());
-  return VIEWS.map(view => {
+  // As fotos saem sem o destaque laranja de peça selecionada ou sob o ponteiro.
+  const selected = state.selected;
+  setHover(null);
+  setSelected(null);
+  const views = VIEWS.map(view => {
     const right = new THREE.Vector3().crossVectors(view.up, view.dir);
     const w = extent(size, right) * 1.06;
     const h = extent(size, view.up) * 1.06;
@@ -47,6 +53,8 @@ function shootViews() {
     const image = snapshot(cam, Math.round(w * px), Math.round(h * px));
     return { ...view, cam, image, width: Math.round(w * SCREEN_PX_PER_M), height: Math.round(h * SCREEN_PX_PER_M) };
   });
+  setSelected(selected);
+  return views;
 }
 
 // Cada dano aparece numa vista só: a mais de frente para a face tocada. Sem a normal, vale o lado da peça.
@@ -55,9 +63,9 @@ function bestView(d, views) {
   return views.reduce((best, v) => (d.normal.dot(v.dir) > d.normal.dot(best.dir) ? v : best));
 }
 
-function pinsFor(view, damages) {
-  return damages
-    .filter(({ view: v }) => v === view)
+function pinsFor(view, placed) {
+  return placed
+    .filter(p => p.view === view)
     .map(({ d, n }) => {
       v3.copy(d.point).project(view.cam);
       const left = ((v3.x + 1) / 2) * 100;
@@ -78,6 +86,19 @@ function viewFigure(view, placed) {
     </figure>`;
 }
 
+// As cinco vistas com os números. Vazio enquanto o modelo não carregou.
+export function viewsBlock() {
+  if (!car.children.length) return '';
+  shots ??= shootViews();
+  const placed = state.damages.map((d, i) => ({ d, n: pad2(i + 1), view: bestView(d, shots) }));
+  const [left, top, right, front, rear] = shots;
+  return `
+    <div class="report-views">
+      <div class="report-plan">${viewFigure(left, placed)}${viewFigure(top, placed)}${viewFigure(right, placed)}</div>
+      <div class="report-ends">${viewFigure(front, placed)}${viewFigure(rear, placed)}</div>
+    </div>`;
+}
+
 function damageRows() {
   if (!state.damages.length) return '<tr><td colspan="5" class="report-none">Nenhum dano registrado na entrada.</td></tr>';
   return state.damages.map((d, i) => {
@@ -86,9 +107,29 @@ function damageRows() {
   }).join('');
 }
 
-function reportHtml(views) {
-  const placed = state.damages.map((d, i) => ({ d, n: pad2(i + 1), view: bestView(d, views) }));
-  const [left, top, right, front, rear] = views;
+// Itens mecânicos com problema, só depois de o checklist ser salvo.
+function itemsSection() {
+  if (!state.checklistSaved) return '';
+  const problems = ITEM_NAMES.filter(n => itemOf(n).status === 'problem');
+  const total = problems.reduce((sum, n) => sum + itemOf(n).time, 0);
+  const rows = problems.length
+    ? problems.map(n => {
+      const it = itemOf(n);
+      return `<tr><td>${esc(n)}<small>${esc(CATEGORY_OF[n].label)}</small></td><td>${ITEM_SIDE_LABEL[it.side]}</td><td>${formatMinutes(it.time)}</td><td>${esc(it.desc) || '—'}</td></tr>`;
+    }).join('')
+    : '<tr><td colspan="4" class="report-none">Todos os itens do veículo estão OK. Nenhum problema encontrado.</td></tr>';
+  return `
+    <section>
+      <h2>Itens do checklist com problema</h2>
+      <table class="report-table report-items">
+        <thead><tr><th>Item</th><th>Lado</th><th>Tempo</th><th>Observação</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      ${problems.length ? `<p class="report-total">Tempo estimado total: <b>${formatMinutes(total)}</b></p>` : ''}
+    </section>`;
+}
+
+function reportHtml() {
   const today = new Date().toLocaleDateString('pt-BR');
   return `
     <div class="report-bar">
@@ -98,7 +139,7 @@ function reportHtml(views) {
     <article class="report-page">
       <header class="report-head">
         <div>
-          <h1 id="reportTitle">Relatório de danos na carroceria</h1>
+          <h1 id="reportTitle">Checklist de entrada do veículo</h1>
           <p>OS nº ${VEHICLE.serviceOrder} · ${today}</p>
         </div>
         <img src="assets/logo.webp" alt="RepareCar" width="40" height="40">
@@ -112,18 +153,16 @@ function reportHtml(views) {
       </dl>
       <section>
         <h2>Marcas na carroceria</h2>
-        <div class="report-views">
-          <div class="report-plan">${viewFigure(left, placed)}${viewFigure(top, placed)}${viewFigure(right, placed)}</div>
-          <div class="report-ends">${viewFigure(front, placed)}${viewFigure(rear, placed)}</div>
-        </div>
+        ${viewsBlock()}
       </section>
       <section>
         <h2>Danos registrados</h2>
-        <table class="report-table">
+        <table class="report-table report-damages">
           <thead><tr><th>Nº</th><th>Avaria</th><th>Peça</th><th>Lado</th><th>Observação</th></tr></thead>
           <tbody>${damageRows()}</tbody>
         </table>
       </section>
+      ${itemsSection()}
       <footer class="report-sign">
         <div><span></span>Cliente</div>
         <div><span></span>Responsável pela entrada</div>
@@ -132,14 +171,7 @@ function reportHtml(views) {
 }
 
 export function openReport() {
-  // As fotos saem sem o destaque laranja de peça selecionada ou sob o ponteiro.
-  const selected = state.selected;
-  setHover(null);
-  setSelected(null);
-  const views = shootViews();
-  setSelected(selected);
-
-  root.innerHTML = reportHtml(views);
+  root.innerHTML = reportHtml();
   root.hidden = false;
   document.body.classList.add('reporting');
   root.querySelector('[data-report="close"]').focus();

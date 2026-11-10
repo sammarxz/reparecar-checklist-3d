@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="css/viewer.css">
   <link rel="stylesheet" href="css/panel.css">
   <link rel="stylesheet" href="css/damages.css">
+  <link rel="stylesheet" href="css/os.css">
+  <link rel="stylesheet" href="css/checklist.css">
   <link rel="stylesheet" href="css/report.css">
   <script type="importmap">
     {
@@ -63,10 +65,13 @@
           <button class="back" id="btnHeaderBack" aria-label="Voltar">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
           </button>
-          <h1 id="title">Danos</h1>
+          <h1 id="title">Ordem de serviço</h1>
         </header>
+        <nav class="stepper" id="stepper" aria-label="Etapas do checklist" hidden></nav>
 
-        <div class="grid">
+        <div class="os-view" id="viewOs"></div>
+
+        <div class="grid" id="viewDamages" hidden>
           <section class="card viewer" aria-label="Modelo 3D do veículo">
             <div class="stage" id="stage">
               <div class="vehicle">
@@ -90,6 +95,21 @@
             </div>
           </aside>
         </div>
+
+        <section class="card panel view-fill" id="viewItems" aria-label="Itens do checklist" hidden>
+          <div class="body" id="itemsBody"></div>
+          <div class="foot">
+            <button class="btn" id="btnItemsBack">Voltar para danos</button>
+            <button class="btn primary" id="btnItemsSave">Salvar checklist</button>
+          </div>
+        </section>
+
+        <section class="card panel view-fill budget-view" id="viewBudget" aria-label="Orçamento" hidden>
+          <div class="body" id="budgetBody"></div>
+          <div class="foot">
+            <button class="btn primary" id="btnBudgetOs">Ver ordem de serviço</button>
+          </div>
+        </section>
       </div>
     </main>
   </div>
@@ -106,6 +126,14 @@
       <div class="sheet-body" id="sheet"></div>
     </div>
   </div>
+  <dialog class="confirm" id="confirmPending" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">Itens sem resposta</h3>
+    <p id="confirmText"></p>
+    <div class="confirm-actions">
+      <button class="btn" type="button" id="confirmCancel">Revisar</button>
+      <button class="btn primary" type="button" id="confirmOk">Salvar como Ok</button>
+    </div>
+  </dialog>
   <section class="report" id="report" role="dialog" aria-modal="true" aria-labelledby="reportTitle" hidden></section>
   <div class="toast" id="toast" role="status"></div>
 

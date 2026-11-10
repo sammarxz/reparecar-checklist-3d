@@ -61,7 +61,8 @@
 }
 
 /* Selo "Diagnóstico" com as cores de STATUS_STYLES do produto */
-.vehicle .status {
+.vehicle .status,
+.os-summary .status {
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;

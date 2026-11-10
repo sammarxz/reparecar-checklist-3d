@@ -46,6 +46,7 @@ scene.add(ring);
 
 function resize() {
   const w = stage.clientWidth, h = stage.clientHeight;
+  if (!w || !h) return; // palco escondido: fica no último tamanho até voltar à tela
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
@@ -73,8 +74,11 @@ const frameTasks = [];
 export function onFrame(fn) { frameTasks.push(fn); }
 export function startLoop() {
   (function loop() {
-    for (const fn of frameTasks) fn();
-    renderer.render(scene, camera);
+    // Fora do passo de danos o palco fica escondido e o quadro não é desenhado.
+    if (stage.clientWidth) {
+      for (const fn of frameTasks) fn();
+      renderer.render(scene, camera);
+    }
     requestAnimationFrame(loop);
   })();
 }
