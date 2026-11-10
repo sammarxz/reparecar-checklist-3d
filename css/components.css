@@ -33,8 +33,18 @@
   color: var(--subtle);
 }
 
-.eyebrow.spaced {
-  margin-top: 20px;
+.link-btn {
+  border: 0;
+  padding: 4px 0;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.link-btn:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
 }
 
 /* Campos do formulário de dano, no formato do produto */

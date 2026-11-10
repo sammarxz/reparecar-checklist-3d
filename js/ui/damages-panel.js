@@ -6,6 +6,7 @@ import { PART_BY_ID, SIDE_LABEL, DAMAGE_TYPES } from '../data/parts.js';
 import { STACKED_LAYOUT } from '../config.js';
 import { refs, esc, pad2, ICONS, UPLOAD_BOX, bindUploadStubs } from './dom.js';
 import { selectDamage, closeDamage, commitDamage, removeDamage } from './actions.js';
+import { openReport } from './report.js';
 
 const { panel, drawer, sheet } = refs;
 const stacked = matchMedia(STACKED_LAYOUT);
@@ -66,7 +67,10 @@ export function renderDamages() {
 
   const items = state.damages.map((d, i) => damageItem(d, pad2(i + 1), d.id));
   if (draftInList) items.push(damageItem(state.draft, pad2(state.damages.length + 1), 'draft'));
-  panel.innerHTML = INTRO + (items.length ? `<div class="eyebrow spaced">Danos registrados</div><div class="dmg-list">${items.join('')}</div>` : EMPTY_STATE);
+  const reportButton = state.damages.length ? '<button class="link-btn" type="button" data-open-report>Ver relatório</button>' : '';
+  const listHead = `<div class="list-head"><span class="eyebrow">Danos registrados</span>${reportButton}</div>`;
+  panel.innerHTML = INTRO + (items.length ? `${listHead}<div class="dmg-list">${items.join('')}</div>` : EMPTY_STATE);
+  panel.querySelector('[data-open-report]')?.addEventListener('click', openReport);
   bindList();
   animateOpen(openKey);
 

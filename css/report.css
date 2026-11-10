@@ -1,0 +1,285 @@
+/* Relatório de danos: tela por cima do app e folha A4 na impressão. */
+.report {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow: auto;
+  padding: 16px;
+  background: var(--bg);
+}
+
+body.reporting {
+  overflow: hidden;
+}
+
+.report-bar {
+  max-width: 794px;
+  margin: 0 auto 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.report-bar .btn {
+  flex: none;
+  min-width: 140px;
+}
+
+/* Folha: largura de um A4 a 96 dpi */
+.report-page {
+  max-width: 794px;
+  margin: 0 auto;
+  padding: 40px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  color: var(--text);
+}
+
+.report-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.report-head h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.report-head p {
+  margin: 4px 0 0;
+  color: var(--subtle);
+}
+
+.report-vehicle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px 16px;
+  margin: 16px 0 0;
+}
+
+.report-vehicle dt {
+  font-size: 12px;
+  color: var(--subtle);
+}
+
+.report-vehicle dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+}
+
+.report-page h2 {
+  margin: 28px 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Vistas: de cima entre os dois lados; frente e traseira à direita */
+.report-views {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px 32px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-item);
+}
+
+.report-plan,
+.report-ends {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.report-ends {
+  flex-direction: column;
+  gap: 20px;
+}
+
+.report-view {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.report-view figcaption {
+  font-size: 11px;
+  color: var(--subtle);
+}
+
+.report-shot {
+  position: relative;
+}
+
+.report-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.report-pin {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--problem);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--problem);
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.report-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--subtle);
+  padding: 8px;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.report-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.report-table .num {
+  width: 40px;
+  font-weight: 700;
+  color: var(--problem);
+  font-variant-numeric: tabular-nums;
+}
+
+.report-none {
+  color: var(--subtle);
+}
+
+.report-sign {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 56px;
+  font-size: 12px;
+  color: var(--subtle);
+  text-align: center;
+}
+
+.report-sign span {
+  display: block;
+  margin-bottom: 6px;
+  border-top: 1px solid var(--text);
+}
+
+@media (max-width: 760px) {
+  .report {
+    padding: 12px;
+  }
+
+  .report-page {
+    padding: 20px;
+  }
+
+  /* As três vistas lado a lado têm 340 px; no celular sobram cerca de 310 px. */
+  .report-views {
+    zoom: 0.8;
+    padding: 12px;
+  }
+
+  .report-ends {
+    flex-direction: row;
+  }
+
+  .report-table {
+    font-size: 12px;
+  }
+
+  .report-table th,
+  .report-table td {
+    padding-inline: 4px;
+  }
+
+  /* Sem a coluna Lado no celular: o nome da peça já diz o lado. A folha impressa mantém todas. */
+  .report-table th:nth-child(4),
+  .report-table td:nth-child(4) {
+    display: none;
+  }
+
+  .report-table .num {
+    width: 28px;
+  }
+
+  .report-bar .btn {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .report-sign {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Impressão: só a folha, sem a tela do app */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body.reporting > :not(.report) {
+    display: none !important;
+  }
+
+  body.reporting {
+    background: #fff;
+    overflow: visible;
+  }
+
+  .report {
+    position: static;
+    overflow: visible;
+    padding: 0;
+    background: #fff;
+  }
+
+  .report-bar {
+    display: none;
+  }
+
+  .report-page {
+    max-width: none;
+    padding: 0;
+    border: 0;
+  }
+
+  .report-views,
+  .report-table tr,
+  .report-sign {
+    break-inside: avoid;
+  }
+
+  .report-pin,
+  .report-table .num {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

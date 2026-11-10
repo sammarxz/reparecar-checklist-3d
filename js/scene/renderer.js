@@ -53,6 +53,21 @@ function resize() {
 new ResizeObserver(resize).observe(stage);
 resize();
 
+// Renderiza só o carro, por outra câmera e noutro tamanho, e devolve a imagem em PNG com fundo transparente.
+// Roda tudo na mesma tarefa: a tela volta ao normal antes do próximo quadro, sem piscar.
+export function snapshot(cam, width, height) {
+  const ratio = renderer.getPixelRatio();
+  floor.visible = ring.visible = false;
+  renderer.setPixelRatio(1);
+  renderer.setSize(width, height, false);
+  renderer.render(scene, cam);
+  const url = canvas.toDataURL('image/png');
+  floor.visible = ring.visible = true;
+  renderer.setPixelRatio(ratio);
+  resize();
+  return url;
+}
+
 // Cada módulo registra o que precisa rodar a cada quadro.
 const frameTasks = [];
 export function onFrame(fn) { frameTasks.push(fn); }

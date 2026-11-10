@@ -54,6 +54,15 @@
   color: var(--subtle);
 }
 
+/* Título da lista, com o atalho para o relatório à direita */
+.list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 20px;
+}
+
 /* Lista de danos: cada dano é um card branco que expande no lugar com o formulário */
 .dmg-list {
   display: flex;

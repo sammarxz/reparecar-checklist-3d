@@ -34,6 +34,7 @@ O IPv4 aparece em `ipconfig`, no adaptador Wi-Fi. `?debug=1` mostra no canto do 
     viewer.css            palco 3D, cabeçalho do veículo, pinos, carregamento
     panel.css             painel da direita: corpo com rolagem e rodapé fixo
     damages.css           estado vazio, lista de danos em acordeão, drawer
+    report.css            relatório na tela e folha A4 na impressão
   js/
     main.js               entrada: liga cena, painel e rodapé; carrega o modelo
     config.js             URL do modelo, cor da pintura, quebra de layout, dados do veículo
@@ -48,10 +49,12 @@ O IPv4 aparece em `ipconfig`, no adaptador Wi-Fi. `?debug=1` mostra no canto do 
     ui/dom.js             referências de DOM, escape, ícones, toast, diagnóstico
     ui/actions.js         ações: tocar na lataria, abrir, concluir e remover dano
     ui/damages-panel.js   painel de danos e drawer
+    ui/report.js          relatório: cinco vistas do carro com os danos, lista e assinaturas
 ```
 
 Dependências entre camadas: `data` não importa nada; `state` não importa nada; `scene` importa `data` e `state`;
-`ui` importa tudo. `ui/actions.js` é o único lugar que combina cena e painel.
+`ui` importa tudo. `ui/actions.js` é o único lugar que combina cena e painel. `ui/report.js` só lê a cena
+para fotografar o carro.
 
 ## O que a página faz
 
@@ -69,6 +72,16 @@ Dependências entre camadas: `data` não importa nada; `state` não importa nada
   drawer de baixo, com a base do `responsive-modal.ts` do produto. No celular o card de danos tem a altura do
   conteúdo, quem rola é a página, e o rodapé fica preso no fim da tela.
 - O pino some quando o ponto marcado fica do outro lado do carro.
+- "Ver relatório", ao lado de "Danos registrados", abre o relatório para imprimir: dados da OS e do veículo, o carro
+  de cima, dos dois lados, de frente e de trás, a lista de danos e as linhas de assinatura. "Imprimir" usa a
+  impressão do navegador, que salva em PDF.
+
+## Como o relatório desenha o carro
+
+As cinco vistas saem do mesmo GLB, por câmeras ortográficas, em `js/ui/report.js`. Não há ilustração separada.
+Cada dano aparece numa vista só: a mais de frente para a face tocada, pela normal guardada no toque. O ponto 3D é
+projetado pela câmera dessa vista, então o número cai onde o mecânico tocou. A imagem sai 3 vezes maior que na
+tela, para a impressão ficar nítida.
 
 ## Peças do modelo
 
@@ -79,3 +92,5 @@ Portas, tampa, luzes e vidros vêm separados no GLB. Capô, teto, paralamas e pa
 
 - Uma entidade `checklistDamages` com `checklistId`, peça, ponto no modelo, tipo, observação e mídia.
 - Um GLB por modelo ou por tipo de carroceria, com o mapa de peças.
+- Guardar no dano o ponto e a normal, para o relatório redesenhar o carro depois.
+- Gerar o PDF no produto, como o orçamento faz com `@react-pdf/renderer`, para guardar na OS e enviar ao cliente.
