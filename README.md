@@ -29,7 +29,7 @@ O IPv4 aparece em `ipconfig`, no adaptador Wi-Fi. `?debug=1` mostra no canto do 
   assets/logo.webp        logo oficial, copiado de apps/frontend/public/images
   assets/search.webp      ilustração do estado vazio, copiada do mesmo lugar
   assets/models/          modelo 3D do Golf GTI 2025
-  assets/steps/           imagens das etapas: reparo.webp, ilustração nova, e checklist.webp, image-d7.webp do frontend
+  assets/steps/           imagem das etapas: checklist.webp, que é image-d7.webp do frontend
   css/
     tokens.css            variáveis do produto, reset e base
     layout.css            trilho lateral, página, cabeçalho, grade
