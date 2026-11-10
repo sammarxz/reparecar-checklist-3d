@@ -9,10 +9,10 @@ import { renderItems } from './checklist-items.js';
 const VIEWS = { os: $('viewOs'), damages: $('viewDamages'), items: $('viewItems') };
 const RENDER = { os: renderOs, damages: renderDamages, items: renderItems };
 
-// Títulos e imagens das etapas. As imagens vêm de apps/frontend/public/images:
-// onboarding/funilaria-pintura.webp e image-d7.webp, a prancheta da tela de sucesso do orçamento.
+// Títulos e imagens das etapas. reparo.webp é a ilustração nova de funilaria, no estilo das do produto;
+// checklist.webp é image-d7.webp do frontend, a prancheta da tela de sucesso do orçamento.
 const STEPS = {
-  damages: { n: 1, title: 'Marque os danos na carroceria', image: 'assets/steps/funilaria.webp' },
+  damages: { n: 1, title: 'Marque os danos na carroceria', image: 'assets/steps/reparo.webp' },
   items: { n: 2, title: 'Faça a inspeção do veículo', image: 'assets/steps/checklist.webp' },
 };
 const TOTAL_STEPS = 2;
