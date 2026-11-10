@@ -21,7 +21,6 @@ const stepCard = $('stepCard');
 
 export function go(view) {
   state.view = view;
-  document.body.dataset.view = view;
   for (const [id, el] of Object.entries(VIEWS)) el.hidden = id !== view;
   const inChecklist = view !== 'os';
   $('title').textContent = `${inChecklist ? 'Checklist' : 'Ordem de serviço'} · ${VEHICLE.plate}`;

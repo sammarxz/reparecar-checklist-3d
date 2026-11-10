@@ -74,8 +74,9 @@ para fotografar o carro.
    "Não" vai direto para o passo 2.
 2. **Danos.** O carro 3D e o painel de danos. "Voltar" leva para a OS; "Ir para checklist" segue. Os dois pedem para
    concluir ou cancelar um dano aberto.
-3. **Checklist.** Igual a `components/pages/checklist` do produto: cartão de 668 px, os 45 itens do seed por
-   categoria, Ok e Problema, e o formulário do problema. Lado, tempo e descrição são obrigatórios, com as mensagens
+3. **Checklist.** O cartão é igual a `components/pages/checklist` do produto: os 45 itens do seed por
+   categoria, Ok e Problema, e o formulário do problema. O painel ao lado mostra o progresso, as categorias, que
+   levam até o trecho da lista, e os danos da etapa 1. Lado, tempo e descrição são obrigatórios, com as mensagens
    do produto. Ao salvar com itens sem resposta, abre "Confirmar itens não verificados", que só libera o "Sim"
    depois de rolar a lista. "Voltar" leva para Danos, ou para a OS quando não há dano de funilaria.
 4. **Orçamento.** No produto, o primeiro salvamento cria o orçamento e abre a tela dele. Aqui fica o resumo: itens
@@ -86,6 +87,11 @@ para fotografar o carro.
 
 Cada etapa abre com o cabeçalho de `components/pages/process-step-header.tsx`, usado na criação de OS: anel de
 progresso, "Passo X de 3", título e imagem. A seta do cabeçalho da página volta para a OS.
+
+As três etapas usam a mesma grade: área principal à esquerda e painel de 460 px à direita, com as ações no rodapé
+do painel. A página vai até 1.200 px, então a área principal fica em até 724 px em todas as etapas: larga o
+bastante para o carro e perto dos 668 px do checklist do produto. Em tela empilhada, o resumo sobe para cima da
+lista e o rodapé fica preso no fim da tela durante a etapa toda.
 
 ## Etapa de danos
 

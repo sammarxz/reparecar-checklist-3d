@@ -13,14 +13,6 @@
   box-shadow: var(--shadow);
 }
 
-/* No checklist e no orçamento o cabeçalho acompanha o cartão de 668 px */
-body[data-view="items"] .step-card,
-body[data-view="budget"] .step-card {
-  width: 100%;
-  max-width: 668px;
-  margin-inline: auto;
-}
-
 .step-copy {
   display: flex;
   align-items: center;

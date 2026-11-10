@@ -1,12 +1,8 @@
 /* Passo Checklist com os valores de components/pages/checklist do produto, modais e orçamento. */
 
-/* Cartão de 668 px no centro: lista com rolagem própria e rodapé */
+/* Cartão do checklist na coluna principal da grade, com rolagem própria */
 .ck-card {
-  flex: 1;
   min-height: 0;
-  width: 100%;
-  max-width: 668px;
-  margin-inline: auto;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -20,25 +16,10 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  margin: 24px 16px 0 24px;
+  margin: 24px 16px 24px 24px;
   padding-right: 8px;
   scrollbar-width: thin;
   scrollbar-color: #d5d7da transparent;
-}
-
-.ck-foot {
-  display: flex;
-  gap: 8px;
-  padding: 24px;
-  background: #fff;
-}
-
-.ck-foot .btn {
-  height: 48px;
-}
-
-.ck-foot .btn:not(.primary) {
-  color: #717680;
 }
 
 .ck-category {
@@ -372,51 +353,135 @@
   font-variant-numeric: tabular-nums;
 }
 
-.budget-view .ck-foot {
-  justify-content: flex-end;
+/* Painel de resumo do checklist */
+.ck-stats b small {
+  font-size: 13px;
+  color: var(--subtle);
 }
 
-.budget-view .ck-foot .btn {
-  flex: none;
-  min-width: 220px;
+.sum-extra .eyebrow {
+  margin-top: 20px;
 }
 
-@media (max-width: 760px) {
-  /* No celular a página rola; o rodapé fica preso no fim da tela, como no painel de danos. */
+.cat-nav {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cat-nav button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  text-align: left;
+  color: var(--text);
+}
+
+.cat-nav button:hover {
+  background: var(--pill);
+}
+
+.cat-nav .count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--subtle);
+  background: var(--surface-muted);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cat-nav .count.part {
+  color: var(--warn);
+  background: var(--warn-soft);
+}
+
+.cat-nav .count.full {
+  color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.sum-extra .os-muted {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.sum-damages {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sum-damages li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.sum-damages .n {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--problem);
+  font-variant-numeric: tabular-nums;
+}
+
+.sum-damages span:last-child {
+  color: var(--subtle);
+}
+
+@media (max-width: 1100px) {
+  /* Tela empilhada: o resumo sobe para cima da lista e o rodapé do painel fica preso no fim da tela
+     durante toda a etapa. Sem a caixa do painel, corpo e rodapé viram itens da grade. */
+  .step-grid .panel {
+    display: contents;
+  }
+
+  .step-grid .panel .body {
+    order: -1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+  }
+
+  .step-grid .panel .foot {
+    order: 2;
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: 0 -4px 16px rgba(10, 13, 18, 0.06);
+  }
+
+  .sum-extra {
+    display: none;
+  }
+
   .ck-card {
-    flex: none;
     overflow: visible;
   }
 
   .ck-scroll {
     overflow: visible;
-    margin: 16px 16px 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .ck-scroll {
+    margin: 16px;
     padding-right: 0;
-  }
-
-  .ck-foot {
-    position: sticky;
-    bottom: 0;
-    z-index: 3;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
-    border-radius: 0 0 18px 18px;
-  }
-
-  /* Em coluna, flex: 1 zeraria a altura dos botões */
-  .ck-foot .btn {
-    flex: none;
-    width: 100%;
   }
 
   .ck-stats b {
     font-size: 17px;
-  }
-
-  .budget-view .ck-foot .btn {
-    flex: 1;
-    min-width: 0;
   }
 }

@@ -90,7 +90,7 @@
 }
 
 .inner {
-  max-width: 1400px;
+  max-width: 1200px; /* com o painel de 460 px, a coluna principal fica em até 724 px em todas as etapas */
   width: 100%;
   margin-inline: auto;
   display: flex;

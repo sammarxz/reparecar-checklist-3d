@@ -96,21 +96,32 @@
           </aside>
         </div>
 
-        <!-- Checklist como components/pages/checklist: cartão de 668 px no centro, lista com rolagem e rodapé -->
-        <section class="ck-card" id="viewItems" aria-label="Itens do checklist" hidden>
-          <div class="ck-scroll" id="itemsBody"></div>
-          <div class="ck-foot">
-            <button class="btn" type="button" id="btnItemsBack">Voltar</button>
-            <button class="btn primary" type="button" id="btnItemsSave">Ir para orçamento</button>
-          </div>
-        </section>
+        <!-- As três etapas usam a mesma grade: área principal à esquerda e painel de 460 px com as ações à direita.
+             O cartão do checklist é o de components/pages/checklist, sem mudança. -->
+        <div class="grid step-grid" id="viewItems" hidden>
+          <section class="ck-card" aria-label="Itens do checklist">
+            <div class="ck-scroll" id="itemsBody"></div>
+          </section>
+          <aside class="card panel" aria-label="Resumo do checklist">
+            <div class="body" id="itemsSummary"></div>
+            <div class="foot">
+              <button class="btn" type="button" id="btnItemsBack">Voltar</button>
+              <button class="btn primary" type="button" id="btnItemsSave">Ir para orçamento</button>
+            </div>
+          </aside>
+        </div>
 
-        <section class="ck-card budget-view" id="viewBudget" aria-label="Orçamento" hidden>
-          <div class="ck-scroll" id="budgetBody"></div>
-          <div class="ck-foot">
-            <button class="btn primary" type="button" id="btnBudgetOs">Ver ordem de serviço</button>
-          </div>
-        </section>
+        <div class="grid step-grid budget-view" id="viewBudget" hidden>
+          <section class="ck-card" aria-label="Itens do orçamento">
+            <div class="ck-scroll" id="budgetBody"></div>
+          </section>
+          <aside class="card panel" aria-label="Resumo do orçamento">
+            <div class="body" id="budgetSummary"></div>
+            <div class="foot">
+              <button class="btn primary" type="button" id="btnBudgetOs">Ver ordem de serviço</button>
+            </div>
+          </aside>
+        </div>
       </div>
     </main>
   </div>
