@@ -1,86 +1,93 @@
 /* Ordem de serviço e barra de passos do checklist. */
 
-/* Barra de passos: Danos, Checklist, Orçamento */
-.stepper ol {
+/* Cabeçalho da etapa, como components/pages/process-step-header.tsx: anel, "Passo X de 3", título e imagem */
+.step-card {
+  flex: none;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-radius: var(--radius-card);
+  background: #fff;
+  box-shadow: var(--shadow);
 }
 
-.stepper li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* No checklist e no orçamento o cabeçalho acompanha o cartão de 668 px */
+body[data-view="items"] .step-card,
+body[data-view="budget"] .step-card {
+  width: 100%;
+  max-width: 668px;
+  margin-inline: auto;
 }
 
-.stepper li + li {
-  flex: 1;
-}
-
-.stepper li + li::before {
-  content: "";
-  flex: 1;
-  min-width: 16px;
-  height: 1px;
-  background: var(--border-strong);
-}
-
-/* Linha laranja até o passo atual */
-.stepper li.done + li::before {
-  background: var(--accent);
-}
-
-.stepper button,
-.stepper li > span {
+.step-copy {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 8px 4px 4px;
-  border: 0;
-  border-radius: 999px;
-  background: none;
-  font: inherit;
-  color: var(--subtle);
+  min-width: 0;
 }
 
-.stepper button:hover {
-  background: var(--border);
+.step-copy > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
-.step-n {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid var(--border-strong);
+.step-ring {
+  position: relative;
+  flex: none;
+  width: 48px;
+  height: 48px;
+}
+
+.step-ring svg {
+  width: 48px;
+  height: 48px;
+  transform: rotate(-90deg);
+}
+
+.step-ring circle {
+  fill: none;
+  stroke-width: 2;
+}
+
+.step-ring .track {
+  stroke: #e9eaeb;
+}
+
+.step-ring .bar {
+  stroke: #e8642c;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease-in-out;
+}
+
+.step-ring b {
+  position: absolute;
+  inset: 0;
   display: grid;
   place-items: center;
-  font-size: 12px;
-  font-weight: 700;
-  background: #fff;
-}
-
-.step-label {
+  font-size: 18px;
   font-weight: 600;
-  white-space: nowrap;
+  color: #e8642c;
 }
 
-.stepper .current .step-n {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
+.step-of {
+  font-size: 14px;
+  color: #8e95a2;
 }
 
-.stepper .current .step-label {
-  color: var(--text);
+.step-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #101827;
 }
 
-.stepper .done .step-n {
-  border-color: var(--accent-border);
-  background: var(--accent-soft);
-  color: var(--accent);
+.step-card img {
+  flex: none;
+  height: 64px;
+  width: auto;
 }
 
 /* OS: cartão do veículo à esquerda, abas à direita, como o modal da OS */
@@ -366,26 +373,16 @@
 }
 
 @media (max-width: 760px) {
-  .stepper ol {
-    gap: 8px;
+  .step-card {
+    padding: 16px;
   }
 
-  .stepper li {
-    gap: 8px;
+  .step-title {
+    font-size: 16px;
   }
 
-  .step-label {
-    font-size: 13px;
-  }
-
-  /* Os três nomes não cabem em 343 px: só o passo atual mostra o nome. */
-  .stepper li:not(.current) .step-label {
-    display: none;
-  }
-
-  .stepper button,
-  .stepper li > span {
-    padding-right: 4px;
+  .step-card img {
+    height: 44px;
   }
 
   .os-summary,

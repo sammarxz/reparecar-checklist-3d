@@ -4,6 +4,7 @@ export const state = {
   view: 'os',
   osTab: 'checklist',
   checklistCreated: false,
+  bodywork: null, // resposta a "Existe dano de funilaria?": sem dano, o checklist pula a etapa de danos
   checklistSaved: false, // salvo uma vez: o orçamento já existe e salvar de novo só volta para a OS
 
   // Danos na carroceria
@@ -15,7 +16,6 @@ export const state = {
 
   // Itens mecânicos: nome do item -> { status: 'ok' | 'problem', side, time, desc }
   items: {},
-  openCats: new Set(['suspension_wheels']),
 };
 
 export function clearSelection() {

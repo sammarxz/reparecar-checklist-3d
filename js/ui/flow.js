@@ -9,16 +9,24 @@ import { renderBudget } from './budget.js';
 
 const VIEWS = { os: $('viewOs'), damages: $('viewDamages'), items: $('viewItems'), budget: $('viewBudget') };
 const RENDER = { os: renderOs, damages: renderDamages, items: renderItems, budget: renderBudget };
-const STEPS = [['damages', 'Danos'], ['items', 'Checklist'], ['budget', 'Orçamento']];
-const stepper = $('stepper');
+
+// Títulos e imagens das etapas. As imagens vêm de apps/frontend/public/images.
+const STEPS = {
+  damages: { n: 1, title: 'Marque os danos na carroceria', image: 'assets/steps/car-broken.webp' },
+  items: { n: 2, title: 'Faça a inspeção do veículo', image: 'assets/steps/tool-box.webp' },
+  budget: { n: 3, title: 'Orçamento criado', image: 'assets/steps/budget.webp' },
+};
+const TOTAL_STEPS = 3;
+const stepCard = $('stepCard');
 
 export function go(view) {
   state.view = view;
+  document.body.dataset.view = view;
   for (const [id, el] of Object.entries(VIEWS)) el.hidden = id !== view;
   const inChecklist = view !== 'os';
   $('title').textContent = `${inChecklist ? 'Checklist' : 'Ordem de serviço'} · ${VEHICLE.plate}`;
-  stepper.hidden = !inChecklist;
-  if (inChecklist) renderStepper();
+  stepCard.hidden = !inChecklist;
+  if (inChecklist) renderStepCard(STEPS[view]);
   RENDER[view]();
   window.scrollTo(0, 0);
 }
@@ -32,20 +40,31 @@ export function leaveDamages(to) {
   go(to);
 }
 
-// Danos e Checklist alternam livremente. Orçamento só chega salvando o checklist.
-function renderStepper() {
-  const current = STEPS.findIndex(([id]) => id === state.view);
-  stepper.innerHTML = `<ol>${STEPS.map(([id, label], i) => {
-    const status = i < current ? 'done' : i === current ? 'current' : 'next';
-    const canGo = id !== 'budget' && state.view !== 'budget' && i !== current;
-    const inner = `<span class="step-n">${i + 1}</span><span class="step-label">${label}</span>`;
-    const body = canGo
-      ? `<button type="button" data-step="${id}">${inner}</button>`
-      : `<span ${i === current ? 'aria-current="step"' : ''}>${inner}</span>`;
-    return `<li class="${status}">${body}</li>`;
-  }).join('')}</ol>`;
-  stepper.querySelector('[data-step="items"]')?.addEventListener('click', () => leaveDamages('items'));
-  stepper.querySelector('[data-step="damages"]')?.addEventListener('click', () => go('damages'));
+// Anel de progresso como components/ui/circular-progress.tsx: raio 16 num quadro de 40.
+function progressRing(step, total) {
+  const length = 2 * Math.PI * 16;
+  const offset = length - (length * step) / total;
+  return `
+    <span class="step-ring" role="img" aria-label="Progresso: ${step} de ${total}">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="16" class="track"/>
+        <circle cx="20" cy="20" r="16" class="bar" stroke-dasharray="${length.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"/>
+      </svg>
+      <b>${step}</b>
+    </span>`;
+}
+
+// Cabeçalho da etapa como components/pages/process-step-header.tsx.
+function renderStepCard({ n, title, image }) {
+  stepCard.innerHTML = `
+    <div class="step-copy">
+      ${progressRing(n, TOTAL_STEPS)}
+      <div>
+        <span class="step-of">Passo ${n} de ${TOTAL_STEPS}</span>
+        <div class="step-title">${title}</div>
+      </div>
+    </div>
+    <img src="${image}" alt="" height="64" decoding="async">`;
 }
 
 // Seta do cabeçalho: dentro do checklist volta para a OS; na OS, o pátio fica fora do protótipo.

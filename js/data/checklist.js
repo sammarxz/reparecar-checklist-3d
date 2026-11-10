@@ -39,7 +39,13 @@ export const CATEGORIES = [
 export const ITEM_NAMES = CATEGORIES.flatMap(c => c.items);
 export const CATEGORY_OF = Object.fromEntries(CATEGORIES.flatMap(c => c.items.map(name => [name, c])));
 
-// Opções do campo "Lado (se aplicável)" do produto.
+// Opções do select "Lado (se aplicável)" em checklist-form.tsx.
+export const SIDE_OPTIONS = [
+  ['left', 'Esquerdo'], ['right', 'Direito'], ['front', 'Frente'], ['rear', 'Traseira'],
+  ['all', 'Todos'], ['center', 'Centro'], ['not_applicable', 'Não aplicado'],
+];
+
+// Lado na leitura do checklist, como sideLabels em modal-os/checklist.tsx.
 export const ITEM_SIDE_LABEL = {
   left: 'Esquerdo', right: 'Direito', front: 'Dianteiro', rear: 'Traseiro',
   all: 'Todos', center: 'Centro', not_applicable: 'Não aplicado',

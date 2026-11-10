@@ -117,9 +117,20 @@ root.addEventListener('click', e => {
     return;
   }
   const action = e.target.closest('[data-os]')?.dataset.os;
-  if (action === 'create') state.checklistCreated = true;
-  if (action === 'create' || action === 'continue' || action === 'edit') go('damages');
+  if (action === 'create') askDialog.showModal();
+  if (action === 'continue' || action === 'edit') go(state.bodywork ? 'damages' : 'items');
   if (action === 'print') openReport();
+});
+
+// Antes do checklist: com dano de funilaria, começa pelos danos; sem dano, vai direto para o passo 2.
+const askDialog = $('askBodywork');
+askDialog.addEventListener('click', e => {
+  const answer = e.target.closest('[data-bodywork]')?.dataset.bodywork;
+  if (!answer) return;
+  askDialog.close();
+  state.checklistCreated = true;
+  state.bodywork = answer === 'yes';
+  go(state.bodywork ? 'damages' : 'items');
 });
 
 // Setas trocam de aba, como o tablist do produto.

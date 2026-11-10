@@ -67,7 +67,7 @@
           </button>
           <h1 id="title">Ordem de serviço</h1>
         </header>
-        <nav class="stepper" id="stepper" aria-label="Etapas do checklist" hidden></nav>
+        <div class="step-card" id="stepCard" hidden></div>
 
         <div class="os-view" id="viewOs"></div>
 
@@ -96,18 +96,19 @@
           </aside>
         </div>
 
-        <section class="card panel view-fill" id="viewItems" aria-label="Itens do checklist" hidden>
-          <div class="body" id="itemsBody"></div>
-          <div class="foot">
-            <button class="btn" id="btnItemsBack">Voltar para danos</button>
-            <button class="btn primary" id="btnItemsSave">Salvar checklist</button>
+        <!-- Checklist como components/pages/checklist: cartão de 668 px no centro, lista com rolagem e rodapé -->
+        <section class="ck-card" id="viewItems" aria-label="Itens do checklist" hidden>
+          <div class="ck-scroll" id="itemsBody"></div>
+          <div class="ck-foot">
+            <button class="btn" type="button" id="btnItemsBack">Voltar</button>
+            <button class="btn primary" type="button" id="btnItemsSave">Ir para orçamento</button>
           </div>
         </section>
 
-        <section class="card panel view-fill budget-view" id="viewBudget" aria-label="Orçamento" hidden>
-          <div class="body" id="budgetBody"></div>
-          <div class="foot">
-            <button class="btn primary" id="btnBudgetOs">Ver ordem de serviço</button>
+        <section class="ck-card budget-view" id="viewBudget" aria-label="Orçamento" hidden>
+          <div class="ck-scroll" id="budgetBody"></div>
+          <div class="ck-foot">
+            <button class="btn primary" type="button" id="btnBudgetOs">Ver ordem de serviço</button>
           </div>
         </section>
       </div>
@@ -126,12 +127,21 @@
       <div class="sheet-body" id="sheet"></div>
     </div>
   </div>
-  <dialog class="confirm" id="confirmPending" aria-labelledby="confirmTitle">
-    <h3 id="confirmTitle">Itens sem resposta</h3>
-    <p id="confirmText"></p>
+  <dialog class="confirm ask" id="askBodywork" aria-labelledby="askTitle">
+    <h3 id="askTitle">Existe dano de funilaria que você gostaria de reparar?</h3>
     <div class="confirm-actions">
-      <button class="btn" type="button" id="confirmCancel">Revisar</button>
-      <button class="btn primary" type="button" id="confirmOk">Salvar como Ok</button>
+      <button class="btn" type="button" data-bodywork="no">Não</button>
+      <button class="btn" type="button" data-bodywork="yes">Sim</button>
+    </div>
+  </dialog>
+  <!-- Como modal-confirm-pending-items.tsx do produto -->
+  <dialog class="confirm" id="confirmPending" aria-labelledby="pendingTitle" aria-describedby="pendingText">
+    <h3 id="pendingTitle">Confirmar itens não verificados</h3>
+    <p id="pendingText"></p>
+    <ul class="pending-list" id="pendingList"></ul>
+    <div class="confirm-actions">
+      <button class="btn" type="button" id="pendingCancel">Não, preciso revisar</button>
+      <button class="btn primary" type="button" id="pendingOk">Sim, está tudo OK</button>
     </div>
   </dialog>
   <section class="report" id="report" role="dialog" aria-modal="true" aria-labelledby="reportTitle" hidden></section>
